@@ -1,0 +1,7 @@
+puzzles 1
+size 8x5
+*_XX_XX*
+_0X1*_XX
+XXXX_X*2
+*_XXXX_*
+X*2*XXX_

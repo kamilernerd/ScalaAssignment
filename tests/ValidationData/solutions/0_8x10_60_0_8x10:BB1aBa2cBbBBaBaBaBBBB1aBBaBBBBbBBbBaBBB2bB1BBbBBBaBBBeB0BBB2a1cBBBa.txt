@@ -1,0 +1,12 @@
+puzzles 1
+size 8x10
+XX1*X*2*
+*_X_*XX_
+X_X_XXXX
+1*XX*XXX
+X_*XX_*X
+*XXX2*_X
+1XX_*XXX
+_XXX__*_
+*X0XXX2*
+1__*XXX_

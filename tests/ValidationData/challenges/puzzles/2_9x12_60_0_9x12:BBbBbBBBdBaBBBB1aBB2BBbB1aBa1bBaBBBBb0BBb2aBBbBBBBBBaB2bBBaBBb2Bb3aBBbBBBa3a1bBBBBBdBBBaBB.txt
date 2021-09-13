@@ -1,0 +1,14 @@
+puzzles 1
+size 9x12
+XX__X__XX
+X____X_XX
+XX1_XX2XX
+__X1_X_1_
+_X_XXXX__
+0XX__2_XX
+__XXXXXX_
+X2__XX_XX
+__2X__3_X
+X__XXX_3_
+1__XXXXX_
+___XXX_XX
