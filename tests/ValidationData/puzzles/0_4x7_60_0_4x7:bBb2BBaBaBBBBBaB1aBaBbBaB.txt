@@ -1,9 +1,0 @@
-puzzles 1
-size 4x7
-__X_
-_2XX
-_X_X
-XXXX
-_X1_
-X_X_
-_X_X

@@ -1,6 +1,0 @@
-puzzles 1
-size 8x4
-*X_XX2*_
-X1*XX*X*
-*XX*XX*X
-XX*X*XX*

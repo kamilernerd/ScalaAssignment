@@ -1,7 +1,0 @@
-puzzles 1
-size 8x5
-___X____
-__2__2__
-0_____X_
-__X1__XX
-_2XXXXXX
