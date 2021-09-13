@@ -1,8 +1,0 @@
-puzzles 1
-size 8x6
-_XXXXX_X
-XX1____X
-_1_X2_X_
-X1___XXX
-X__XXXXX
-____X_XX

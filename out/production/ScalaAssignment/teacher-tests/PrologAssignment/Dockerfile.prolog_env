@@ -1,5 +1,0 @@
-FROM swipl:stable
-
-WORKDIR /app/
-COPY puzzle_runner.sh /app/
-COPY *.pro *.pl /app/
