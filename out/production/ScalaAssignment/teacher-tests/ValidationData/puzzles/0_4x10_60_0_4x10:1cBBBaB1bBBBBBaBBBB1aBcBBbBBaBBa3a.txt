@@ -1,0 +1,12 @@
+puzzles 1
+size 4x10
+1___
+XXX_
+X1__
+XXXX
+X_XX
+XX1_
+X___
+XX__
+XX_X
+X_3_

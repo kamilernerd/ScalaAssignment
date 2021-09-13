@@ -1,0 +1,21 @@
+puzzles 1
+size 8x19
+XXXXX2__
+XX_XX_X_
+1_X_X2_X
+__XXXX_X
+__1X_XXX
+_XXXXX_X
+__XXXXX_
+_X_X__XX
+__X_X_X_
+_X_X1_XX
+X___XX2_
+XX1XX__X
+XX0_XX_X
+_X__X__X
+X_1_XXXX
+X__X_XX_
+__XX__XX
+XX1_X0_X
+_XX_X___

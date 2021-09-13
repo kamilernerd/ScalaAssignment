@@ -1,0 +1,17 @@
+puzzles 1
+size 8x15
+XXXX_2__
+_XX_XXXX
+XX__0__X
+X_XXXXXX
+XX__2_XX
+XX__X__X
+X____XXX
+0X0_1_XX
+_XXXXX_X
+_XX_10__
+XXX____X
+XXX_XX_X
+X1X0____
+______1_
+XXX_X_XX

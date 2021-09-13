@@ -1,0 +1,19 @@
+puzzles 1
+size 8x17
+1*XXXXX_
+X_XXXX1*
+*XXXXXXX
+XXXX*X*X
+XXXX_*3X
+0_*X__*_
+_*XX_XXX
+XXX_1*_X
+X*2_X_0_
+*X*__0_*
+XX_*_0_X
+*XXXXX*X
+2X*XX__X
+*_X*3*1_
+_*XX*X0_
+_X*X_X0_
+XXXXX*X*
