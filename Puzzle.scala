@@ -18,10 +18,14 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     while (i < row.length) {
       if (row(i).isDigit) {
         if (row(i).charValue() == '1') {
-
+          if (checkMoveForward(i, row)) {
+            row(i + 1) = '*';
+          } else if (checkMoveBackward(i, row)) {
+            row(i - 1) = '*';
+          }
         } else if (row(i).charValue() == '2') {
           if (checkMoveForward(i, row)) {
-            row(i + 1) = '*'; 
+            row(i + 1) = '*';
           }
 
           if (checkMoveBackward(i, row)) {
