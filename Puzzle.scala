@@ -21,7 +21,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
         } else if (row(i).charValue() == '2') {
           if (checkMoveForward(i, row)) {
-            row(i + 1) = '*';
+            row(i + 1) = '*'; 
           }
 
           if (checkMoveBackward(i, row)) {
@@ -70,7 +70,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       return false;
     }
 
-    // Check the next position
+    // Check the previous position
     if (row(pos).charValue() == '_') {
       // Check the position after that
       return checkMoveForward(pos - 1, row);
