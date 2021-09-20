@@ -27,10 +27,22 @@ object PuzzleSolver extends App {
         "2_XX\n" +
         "___1"
     }
+    val solution8x9 = {
+      "_X__1___\n" +
+      "_____XX_\n" +
+      "__2__1_1\n" +
+      "_21_____\n" +
+      "__1_____\n" +
+      "___2____\n" +
+      "X___2_2_\n" +
+      "__02___X\n" +
+      "_____1__\n"
+    }
     val size = puzzle.sizeX * 100 + puzzle.sizeY
     val solution = size match {
       case 407 => solution4x7
       case 707 => solution7x7
+      case 809 => solution8x9
       case 1005 => solution10x5
       case _ => "cannot solve this puzzle"
     }
@@ -39,6 +51,9 @@ object PuzzleSolver extends App {
 
   // arg 0 ./teacher-tests/ValidationData/puzzles/0_4x7_20_0_4x7:a2gBd1e2aBBc1.txt
   // arg 1 ./teacher-tests/ValidationData/solutions/0_4x7_20_0_4x7:a2gBd1e2aBBc1.txt
+
+  // arg 0 ./teacher-tests/ValidationData/puzzles/0_8x9_20_0_8x9:aBb1hBBc2b1a1a21g1h2dBc2a2c02cBe1b.txt
+  // arg 1 ./teacher-tests/ValidationData/solutions/0_8x9_20_0_8x9:aBb1hBBc2b1a1a21g1h2dBc2a2c02cBe1b.txt
 
   initRW(args(0), args(1))
 
