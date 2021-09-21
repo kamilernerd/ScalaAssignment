@@ -1,3 +1,5 @@
+import scala.collection.mutable.ArrayBuffer
+
 // Puzzle class represents the problem and also the solution
 class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
   val sizeX = x;
@@ -12,72 +14,55 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
   def walk(yVal: Integer, row: Array[Char]): Unit = {
     var i = 0;
-    var newRows: String = "";
 
     while (i < row.length) {
       val x = i;
       val y = yVal;
 
-      newRows = row(i).charValue() match {
-        case '0' => return zeroMatch(x, y)
-        case '1' => return oneMatch(x, y)
-        case '2' => return twoMatch(x, y)
-        case '3' => return threeMatch(x, y)
-        case '4' => return fourMatch(x, y)
-        case 'X' => return fourMatch(x, y)
-        case '*' => return fourMatch(x, y)
-        case '_' => return fourMatch(x, y)
-        case _  => return row
+      val next = y + 1
+      val prev = y - 1
+
+      val prevRow = if (prev < 0) solutionArray.head.toCharArray else solutionArray(prev).toCharArray;
+      val nextRow = if (next < solutionArray.size) solutionArray(next).toCharArray else solutionArray(y).toCharArray
+
+      row(i).charValue() match {
+        case '0' => zeroMatch(x, y, row, prevRow, nextRow)
+        case '1' => oneMatch(x, y)
+        case '2' => twoMatch(x, y)
+        case '3' => threeMatch(x, y)
+        case '4' => fourMatch(x, y)
+        case 'X' => fourMatch(x, y)
+        case '*' => fourMatch(x, y)
+        case '_' => fourMatch(x, y)
+        case _  => row
       }
 
       i += 1;
     }
 
     println(String.valueOf(row));
-    return row;
   }
 
-  def checkRowBoundaries(index: Integer, row: Array[Char]): Boolean = {
-    if (index < 0) {
-      return false;
-    }
-
-    if (index > row.length) {
-      return false;
-    }
-
-    return true;
-  }
-
-  def zeroMatch(x: Integer, y: Integer): Array[Char] = {
-    val row = solutionArray(y).toCharArray
-    val next = y + 1
-    val prev = y - 1
-
-    val prevRow = if (prev < 0) solutionArray.head.toCharArray else solutionArray(prev).toCharArray;
-    val nextRow = if (next > solutionArray.size) solutionArray(y).toCharArray else solutionArray(next).toCharArray
-
+  def zeroMatch(x: Integer, y: Integer, row: Array[Char], prevRow: Array[Char], nextRow: Array[Char]) = {
     // Case 1 - Check left
-    if (checkRowBoundaries(x - 1, row) && row(x - 1).charValue() == '_') {
-      row(x - 1) = '~';
+    if (row(x - 1).charValue() == '_') {
+      row.update(x - 1, '~');
     }
 
     // Case 2 - Check right
-    if (checkRowBoundaries(x + 1, row) && row(x + 1).charValue() == '_') {
-      row(x + 1) = '~';
+    if (row(x + 1).charValue() == '_') {
+      row.update(x + 1, '~');
     }
 
-    // Case 4 - Check right above
+    // Case 4 - Check above
     if (prevRow(x).charValue() == '_') {
-      prevRow(x) = '~';
+      prevRow.update(x, '~');
     }
 
-    // Case 6 - Check below right
+    // Case 6 - Check below
     if (nextRow(x).charValue() == '_') {
-      nextRow(x) = '~';
+      nextRow.update(x, '~');
     }
-
-    return row;
   }
 
   def oneMatch(x: Integer, y: Integer): Unit = {
