@@ -10,21 +10,24 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     walk(i, solutionArray(i).toCharArray);
   }
 
-  def walk(y: Number, row: Array[Char]): Unit = {
+  def walk(yVal: Integer, row: Array[Char]): Unit = {
     var i = 0;
+    var newRows: String = "";
+
     while (i < row.length) {
       val x = i;
-      val y = y;
+      val y = yVal;
 
-      row(i).charValue() match {
-        case '0' => zeroMatch(x, y)
-        case '1' => oneMatch(x, y)
-        case '2' => twoMatch(x, y)
-        case '3' => threeMatch(x, y)
-        case '4' => fourMatch(x, y)
-        case 'X' => fourMatch(x, y)
-        case '*' => fourMatch(x, y)
-        case '_' => fourMatch(x, y)
+      newRows = row(i).charValue() match {
+        case '0' => return zeroMatch(x, y)
+        case '1' => return oneMatch(x, y)
+        case '2' => return twoMatch(x, y)
+        case '3' => return threeMatch(x, y)
+        case '4' => return fourMatch(x, y)
+        case 'X' => return fourMatch(x, y)
+        case '*' => return fourMatch(x, y)
+        case '_' => return fourMatch(x, y)
+        case _  => return row
       }
 
       i += 1;
@@ -34,39 +37,63 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     return row;
   }
 
-  def zeroMatch(x: Integer, y: Integer): Unit = {
-    val row = solutionArray(y).toCharArray
-    val nextRow = solutionArray(y + 1).toCharArray
-    val prevRow = solutionArray(y - 1).toCharArray
-
-    // Case 1
-    if () {
-
+  def checkRowBoundaries(index: Integer, row: Array[Char]): Boolean = {
+    if (index < 0) {
+      return false;
     }
+
+    if (index > row.length) {
+      return false;
+    }
+
+    return true;
+  }
+
+  def zeroMatch(x: Integer, y: Integer): Array[Char] = {
+    val row = solutionArray(y).toCharArray
+    val next = y + 1
+    val prev = y - 1
+
+    val prevRow = if (prev < 0) solutionArray.head.toCharArray else solutionArray(prev).toCharArray;
+    val nextRow = if (next > solutionArray.size) solutionArray(y).toCharArray else solutionArray(next).toCharArray
+
+    // Case 1 - Check left
+    if (checkRowBoundaries(x - 1, row) && row(x - 1).charValue() == '_') {
+      row(x - 1) = '~';
+    }
+
+    // Case 2 - Check right
+    if (checkRowBoundaries(x + 1, row) && row(x + 1).charValue() == '_') {
+      row(x + 1) = '~';
+    }
+
+    // Case 4 - Check right above
+    if (prevRow(x).charValue() == '_') {
+      prevRow(x) = '~';
+    }
+
+    // Case 6 - Check below right
+    if (nextRow(x).charValue() == '_') {
+      nextRow(x) = '~';
+    }
+
+    return row;
   }
 
   def oneMatch(x: Integer, y: Integer): Unit = {
-    val row = solutionArray(y).toCharArray
-    val nextRow = solutionArray(y + 1).toCharArray
-    val prevRow = solutionArray(y - 1).toCharArray
+
   }
 
   def twoMatch(x: Integer, y: Integer): Unit = {
-    val row = solutionArray(y).toCharArray
-    val nextRow = solutionArray(y + 1).toCharArray
-    val prevRow = solutionArray(y - 1).toCharArray
+
   }
 
   def threeMatch(x: Integer, y: Integer): Unit = {
-    val row = solutionArray(y).toCharArray
-    val nextRow = solutionArray(y + 1).toCharArray
-    val prevRow = solutionArray(y - 1).toCharArray
+
   }
 
   def fourMatch(x: Integer, y: Integer): Unit = {
-    val row = solutionArray(y).toCharArray
-    val nextRow = solutionArray(y + 1).toCharArray
-    val prevRow = solutionArray(y - 1).toCharArray
+
   }
 
   /*
