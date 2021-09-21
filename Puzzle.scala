@@ -1,11 +1,11 @@
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 
 // Puzzle class represents the problem and also the solution
 class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
   val sizeX = x;
   val sizeY = y;
   val solution = sol;
-  val solutionArray = solution.split("\n").toList;
+  var solutionArray = solution.split("\n").toList;
 
   var i = 0;
   for (i <- 0 until solutionArray.length) {
@@ -22,7 +22,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       val next = y + 1
       val prev = y - 1
 
-      val prevRow = if (prev < 0) solutionArray.head.toCharArray else solutionArray(prev).toCharArray;
+      val prevRow = if (prev >= 0) solutionArray(prev).toCharArray else solutionArray.head.toCharArray;
       val nextRow = if (next < solutionArray.size) solutionArray(next).toCharArray else solutionArray(y).toCharArray
 
       row(i).charValue() match {
@@ -36,32 +36,35 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
         case '_' => fourMatch(x, y)
         case _  => row
       }
-
       i += 1;
     }
 
-    println(String.valueOf(row));
+    println(solutionArray);
   }
 
   def zeroMatch(x: Integer, y: Integer, row: Array[Char], prevRow: Array[Char], nextRow: Array[Char]) = {
     // Case 1 - Check left
     if (row(x - 1).charValue() == '_') {
-      row.update(x - 1, '~');
+      val rown = row.updated(x - 1, '~');
+      solutionArray = solutionArray.updated(y, String.valueOf(rown));
     }
 
     // Case 2 - Check right
     if (row(x + 1).charValue() == '_') {
-      row.update(x + 1, '~');
+      val rown = row.updated(x + 1, '~');
+      solutionArray = solutionArray.updated(y, String.valueOf(rown));
     }
 
     // Case 4 - Check above
     if (prevRow(x).charValue() == '_') {
-      prevRow.update(x, '~');
+      val rown = prevRow.updated(x, '~');
+      solutionArray = solutionArray.updated(y - 1, String.valueOf(rown));
     }
 
     // Case 6 - Check below
     if (nextRow(x).charValue() == '_') {
-      nextRow.update(x, '~');
+      val rown = nextRow.updated(x, '~');
+      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown));
     }
   }
 
