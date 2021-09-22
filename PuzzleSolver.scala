@@ -29,14 +29,14 @@ object PuzzleSolver extends App {
     }
     val solution8x9 = {
       "_X__1___\n" +
-      "_____XX_\n" +
+      "____XX__\n" +
       "__2__1_1\n" +
       "_21_____\n" +
       "__1_____\n" +
       "___2____\n" +
       "X___2_2_\n" +
       "__02___X\n" +
-      "_____1__\n"
+      "_____1__"
     }
     val size = puzzle.sizeX * 100 + puzzle.sizeY
     val solution = size match {

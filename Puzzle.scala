@@ -1,16 +1,22 @@
-import scala.collection.mutable.{ArrayBuffer, ListBuffer}
+import java.util
 
 // Puzzle class represents the problem and also the solution
 class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
   val sizeX = x;
   val sizeY = y;
   val solution = sol;
-  var solutionArray = solution.split("\n").toList;
+  var solutionArray = solution.split("\n");
+
+  println(solutionArray.map(_.mkString(" ")).mkString("\n"));
+
+  println("\n");
 
   var i = 0;
   for (i <- 0 until solutionArray.length) {
     walk(i, solutionArray(i).toCharArray);
   }
+
+  println(solutionArray.map(_.mkString(" ")).mkString("\n"));
 
   def walk(yVal: Integer, row: Array[Char]): Unit = {
     var i = 0;
@@ -27,19 +33,36 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
       row(i).charValue() match {
         case '0' => zeroMatch(x, y, row, prevRow, nextRow)
-        case '1' => oneMatch(x, y)
-        case '2' => twoMatch(x, y)
-        case '3' => threeMatch(x, y)
-        case '4' => fourMatch(x, y)
-        case 'X' => fourMatch(x, y)
-        case '*' => fourMatch(x, y)
-        case '_' => fourMatch(x, y)
+        case '1' => oneMatch(x, y, row, prevRow, nextRow)
+        case '2' => twoMatch(x, y, row, prevRow, nextRow)
+        case '3' => threeMatch(x, y, row, prevRow, nextRow)
+        case '4' => fourMatch(x, y, row, prevRow, nextRow)
+        //case 'X' => fourMatch(x, y)
+        //case '*' => fourMatch(x, y)
+        //case '_' => fourMatch(x, y)
         case _  => row
       }
       i += 1;
     }
+  }
 
-    println(solutionArray);
+  var hasFoundLight = 0;
+  def hasLightInRow(pos: Integer, row: Array[Char]): Boolean = {
+    if (pos == row.length) {
+      println("Length reached", row.length);
+      return false;
+    }
+
+    if (row(pos) == '*') {
+      if (hasFoundLight == 1) {
+        hasFoundLight = 0;
+        println("Found light ", row, "pos ", pos);
+        return true;
+      } else {
+        hasFoundLight = 1;
+      }
+    }
+    hasLightInRow(pos + 1, row);
   }
 
   def zeroMatch(x: Integer, y: Integer, row: Array[Char], prevRow: Array[Char], nextRow: Array[Char]) = {
@@ -68,21 +91,98 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     }
   }
 
-  def oneMatch(x: Integer, y: Integer): Unit = {
+  def oneMatch(x: Integer, y: Integer, row: Array[Char], prevRow: Array[Char], nextRow: Array[Char]) = {
 
   }
 
-  def twoMatch(x: Integer, y: Integer): Unit = {
+  def twoMatch(x: Integer, y: Integer, row: Array[Char], prevRow: Array[Char], nextRow: Array[Char]) = {
+    // Not a star to the left
+    if (row(x - 1) != '*') {
+      // Not X or 0 or ~
+      if (row(x - 1) != 'X' && row(x - 1) != '0' && row(x - 1) != '~' && row(x) != '1') {
+        // See what's above, below, and one more to the left
+        // Then see what's above - 1 and above + 1
+        // Then see what's below - 1 and below + 1
 
+        // Check above
+        if (prevRow(x) != '0' && prevRow(x) != '~' && prevRow(x) != '*' && prevRow(x) != 'X' && prevRow(x) != '1') {
+
+          // Check above - 1
+          if (prevRow(x - 1) != '0' && prevRow(x - 1) != '~' && prevRow(x - 1) != '*' && prevRow(x - 1) != '1' && !hasLightInRow(0, solutionArray(1).toCharArray)) {
+            val rown = row.updated(x - 1, '*');
+            solutionArray = solutionArray.updated(y, String.valueOf(rown));
+          }
+
+          // Check above + 1
+          if (prevRow(x + 1) != '0' && prevRow(x + 1) != '~' && prevRow(x + 1) != '*' && prevRow(x + 1) != '1' && !hasLightInRow(0, solutionArray(1).toCharArray)) {
+            val rown = row.updated(x + 1, '*');
+            solutionArray = solutionArray.updated(y, String.valueOf(rown));
+          }
+        }
+
+        // Check below
+        if (nextRow(x) != '0' && nextRow(x) != '~' && nextRow(x) != '*' && nextRow(x) != 'X' && nextRow(x) != '1') {
+
+          // Check below - 1
+          if (nextRow(x - 1) != '0' && nextRow(x - 1) != '~' && nextRow(x - 1) != '*' && nextRow(x - 1) != '1' && !hasLightInRow(0, solutionArray(1).toCharArray)) {
+            val rown = row.updated(x - 1, '*');
+            solutionArray = solutionArray.updated(y, String.valueOf(rown));
+          }
+
+          // Check below + 1
+          if (nextRow(x + 1) != '0' && nextRow(x + 1) != '~' && nextRow(x + 1) != '*' && nextRow(x + 1) != '1' && !hasLightInRow(0, solutionArray(1).toCharArray)) {
+            val rown = row.updated(x + 1, '*');
+            solutionArray = solutionArray.updated(y, String.valueOf(rown));
+          }
+        }
+      }
+    }
+    // Not a star to the right
+    else if (row(x + 1) != '*') {
+      // Not X or 0 or ~
+      if (row(x + 1) != 'X' && row(x + 1) != '0' && row(x + 1) != '~' && row(x + 1) != '1') {
+        // See what's above, below, and one more to the left
+        // Then see what's above - 1 and above + 1
+        // Then see what's below - 1 and below + 1
+
+        // Check above
+        if (prevRow(x) != '0' && prevRow(x) != '~' && prevRow(x) != '*' && prevRow(x) != 'X' && prevRow(x) != '1') {
+
+          // Check above - 1
+          if (prevRow(x - 1) != '0' && prevRow(x - 1) != '~' && prevRow(x - 1) != '*' && prevRow(x - 1) != '1' && !hasLightInRow(0, solutionArray(1).toCharArray)) {
+            val rown = row.updated(x - 1, '*');
+            solutionArray = solutionArray.updated(y, String.valueOf(rown));
+          }
+
+          // Check above + 1
+          if (prevRow(x + 1) != '0' && prevRow(x + 1) != '~' && prevRow(x + 1) != '*' && prevRow(x + 1) != '1' && !hasLightInRow(0, solutionArray(1).toCharArray)) {
+            val rown = row.updated(x + 1, '*');
+            solutionArray = solutionArray.updated(y, String.valueOf(rown));
+          }
+        }
+
+        // Check below
+        if (nextRow(x) != '0' && nextRow(x) != '~' && nextRow(x) != '*' && nextRow(x) != 'X' && nextRow(x) != '1') {
+
+          // Check below - 1
+          if (nextRow(x - 1) != '0' && nextRow(x - 1) != '~' && nextRow(x - 1) != '*' && nextRow(x - 1) != '1' && !hasLightInRow(0, solutionArray(1).toCharArray)) {
+            val rown = row.updated(x - 1, '*');
+            solutionArray = solutionArray.updated(y, String.valueOf(rown));
+          }
+
+          // Check below + 1
+          if (nextRow(x + 1) != '0' && nextRow(x + 1) != '~' && nextRow(x + 1) != '*' && nextRow(x + 1) != '1' && !hasLightInRow(0, solutionArray(1).toCharArray)) {
+            val rown = row.updated(x + 1, '*');
+            solutionArray = solutionArray.updated(y, String.valueOf(rown));
+          }
+        }
+      }
+    }
   }
 
-  def threeMatch(x: Integer, y: Integer): Unit = {
+  def threeMatch(x: Integer, y: Integer, row: Array[Char], prevRow: Array[Char], nextRow: Array[Char]) = {}
 
-  }
-
-  def fourMatch(x: Integer, y: Integer): Unit = {
-
-  }
+  def fourMatch(x: Integer, y: Integer, row: Array[Char], prevRow: Array[Char], nextRow: Array[Char]) = {}
 
   /*
   def checkMoveForward(pos: Integer, row: Array[Char], prevRow: Array[Char], nextRow: Array[Char]): Boolean = {
