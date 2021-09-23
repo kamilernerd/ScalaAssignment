@@ -18,8 +18,8 @@ object PuzzleSolver extends App {
         "_ _ * 2 _ 1 * _ X *\n" +
         "_ _ _ * _ _ _ 1 * _"
     val solution4x7 = {
-      "\n"+
-      "_2__\n" +
+        "\n"+
+        "_2__\n" +
         "____\n" +
         "_X__\n" +
         "__1_\n" +
@@ -66,7 +66,7 @@ object PuzzleSolver extends App {
       case 2015 => solution20x15
       case _ => "cannot solve this puzzle"
     }
-    return new Puzzle(puzzle.sizeX, puzzle.sizeY, solution)
+    return new Puzzle(puzzle.sizeX, puzzle.sizeY, solution).walk()
   }
 
   // arg 0 ./teacher-tests/ValidationData/puzzles/0_4x7_20_0_4x7:a2gBd1e2aBBc1.txt
