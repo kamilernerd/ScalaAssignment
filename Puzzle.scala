@@ -112,25 +112,25 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       return false;
     }
 
-    if (row(x - 1) != '_') { // Check left
+    if (row(x - 1) != '_') { // Check right
       if(prevRow(x) != '_' && nextRow(x) != '_') {
         var rown = row.updated(x + 1, '*');
         solutionArray = solutionArray.updated(y, String.valueOf(rown));
       }
     }
-    else if (row(x + 1) != '_') { // Check right
+    else if (row(x + 1) != '_') { // Check left
       if(prevRow(x) != '_' && nextRow(x) != '_') {
         var rown = row.updated(x - 1, '*');
         solutionArray = solutionArray.updated(y, String.valueOf(rown));
       }
     }
-    else if (nextRow(x) != '_') {
+    else if (nextRow(x) != '_') { //check prev
       if(row(x+1) != '_' && row(x-1) != '_'){
         var rown = prevRow.updated(x, '*')
         solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
       }
     }
-    else if (prevRow(x) != '_') {
+    else if (prevRow(x) != '_') { //check next
       if(row(x+1) != '_' && row(x-1) != '_'){
         var rown = nextRow.updated(x, '*')
         solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
@@ -176,19 +176,83 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     //prev and nextRow are unavailable
     else if(prevRow(x) != '_' &&  nextRow(x) != '_'){
       var rown = row.updated(x + 1, '*')
-      solutionArray = solutionArray.updated(x, String.valueOf(rown))
+      solutionArray = solutionArray.updated(y, String.valueOf(rown))
       rown = row.updated(x - 1, '*')
-      solutionArray = solutionArray.updated(x, String.valueOf(rown))
+      solutionArray = solutionArray.updated(y, String.valueOf(rown))
     }
     
-    //next row && x-1
-    else if(nextRow(x) != '*')
+    //nextrow && x-1
+    else if(nextRow(x) != '_' && row(x-1) != '_'){
+      var rown = row.updated(x - 1, '*')
+      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+      rown = prevRow.updated(x, '*')
+      solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
+    }
 
-    
+    //nextrow && x+1
+    else if(prevRow(x) != '_' && row(x + 1) != '_'){
+      var rown = row.updated(x + 1, '*')
+      solutionArray = solutionArray.updated(x + 1, String.valueOf(rown))
+      rown = nextRow.updated(x, '*')
+      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
+    }
+    //prev && x-1
+    else if(prevRow(x) != '_' && row(x-1) !=  '_'){
+      var rown = nextRow.updated(x, '*') //y???
+      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
+      rown = row.updated(x+1, '*')
+      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+    }
+    //prev && x+1
+    else if(prevRow(x) != '_' && row(x+1) != '_'){
+      var rown = nextRow.updated(x, '*') //y???
+      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
+      rown = row.updated(x + 1, '*')
+      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+    }
+    // more cases? Doubt***
+
+
   }
 
 
   def DefiniteThreeMatch(x: Integer, y: Integer, row: Array[Char], prevRow: Array[Char], nextRow: Array[Char]) = {
+    if (row(x - 1) != '_'){ //check if left unavailable
+      var rown = row.updated(x + 1, '*')
+      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+      rown = nextRow.updated(x, '*')
+      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
+      rown = prevRow.updated(x, '*')
+      solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
+    }
+
+    else if(row(x + 1) != '_'){ //check if right is unavailable
+      var rown = row.updated(x - 1, '*')
+      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+      rown = nextRow.updated(x, '*')
+      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
+      rown = prevRow.updated(x, '*')
+      solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
+    }
+
+    else if(prevRow(x) != '_'){ //check above
+      var rown = row.updated(x - 1, '*')
+      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+      rown = row.updated(x + 1, '*')
+      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+      rown = nextRow.updated(x, '*')
+      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
+    }
+
+    else if(nextRow(x) != '_'){ //check below
+      var rown = row.updated(x - 1, '*')
+      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+      rown = row.updated(x + 1, '*')
+      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+      rown = prevRow.updated(x, '*')
+      solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
+    }
+    //no more cases? imagine index out of bounds lmao. Check prevRow/nextRow or x-1/x+1 if it is
 
   }
 
