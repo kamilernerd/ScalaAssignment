@@ -7,65 +7,134 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
   val solution = sol;
 //  var solutionArray = solution.split("\n");
 
+//  var solutionArray = Array[String](
+//"____1___",
+//     "____XX__",
+//     "__2__1_1",
+//     "_21_____",
+//     "__1_____",
+//     "___2____",
+//     "X___2_2_",
+//     "__02___X",
+//     "_____1__"
+//  )
+
   var solutionArray = Array[String](
-"_X__1___",
-     "____XX__",
-     "__2__1_1",
-     "_21_____",
-     "__1_____",
-     "___2____",
-     "X___2_2_",
-     "__02___X",
-     "_____1__"
+    "2___1__2",
+    "____XX__",
+    "__2__1_1",
+    "_21_____",
+    "__1_____",
+    "___2____",
+    "X___2_2_",
+    "__02____",
+    "2____1_2"
   )
 
-  var i = 0;
-  for (i <- 0 until solutionArray.length) {
+  def walk(): Unit = {
+    var i = 0;
+    for (i <- 0 until solutionArray.length) {
 
-    val next = i + 1
-    val prev = i - 1
+      var row = solutionArray(i).toCharArray;
 
-    var row = solutionArray(i).toCharArray;
-    val prevRow = if (prev >= 0) solutionArray(prev).toCharArray else solutionArray.head.toCharArray;
-    val nextRow = if (next < solutionArray.length) solutionArray(next).toCharArray else solutionArray(i).toCharArray
+      var k = 0;
+      for (k <- 0 until row.length) {
 
-    var k = 0;
-    for (k <- 0 until row.length - 1) {
-      row(k).charValue() match {  //definite matching
-        case '0' => zeroMatch(k, i, row, prevRow, nextRow)
-        case '1' => DefiniteOneMatch(k, i, row, prevRow, nextRow)
-        case '2' => DefiniteTwoMatch(k, i, row, prevRow, nextRow)
-        case '3' => DefiniteThreeMatch(k, i, row, prevRow, nextRow)
-        case '4' => fourMatch(k, i, row, prevRow, nextRow)
-        case _ =>
+        val next = i + 1
+        val prev = i - 1
+
+        row = solutionArray(i).toCharArray;
+        val prevRow = if (prev >= 0) solutionArray(prev).toCharArray else solutionArray.head.toCharArray;
+        val nextRow = if (next < solutionArray.length) solutionArray(next).toCharArray else solutionArray(i).toCharArray
+
+        row(k)  match { //definite matching
+          case '0' => zeroMatch(k, i, row, prevRow, nextRow)
+          case '1' => DefiniteOneMatch(k, i, row, prevRow, nextRow)
+          case '2' => DefiniteTwoMatch(k, i, row, prevRow, nextRow)
+          case '3' => DefiniteThreeMatch(k, i, row, prevRow, nextRow)
+          case '4' => fourMatch(k, i, row, prevRow, nextRow)
+//          case 'X' => row
+//          case '*' => row
+//          case '~' => row
+//          case '_' => row
+          case _ =>
+        }
       }
+
+      //    var j = 0;
+      //    while(j < 5){
+      //      k = 0
+      //      for (k <- 0 until row.length - 1) {
+      //
+      //        val prevRow = if (prev >= 0) solutionArray(prev).toCharArray else solutionArray.head.toCharArray;
+      //        val nextRow = if (next < solutionArray.length) solutionArray(next).toCharArray else solutionArray(i).toCharArray
+      //
+      //        row(k).charValue() match { //definite matching
+      //          case '1' => DefiniteOneMatch(k, i, row, prevRow, nextRow)
+      //          case '2' => DefiniteTwoMatch(k, i, row, prevRow, nextRow)
+      //          case '3' => DefiniteThreeMatch(k, i, row, prevRow, nextRow)
+      //          case _ =>
+      //        }
+      //      }
+      //      j += 1
+      //    }
+
     }
   }
-
-  println(solutionArray.map(_.mkString(" ")).mkString("\n"));
 
   var hasFoundLight = 0;
   def hasLightInRow(pos: Integer, row: Array[Char]): Boolean = {
     if (pos == row.length) {
-//      println("Length reached", row.length)
+      println("Length reached", row.length)
       return false
     }
 
-    if (hasFoundLight == 1 && row(pos) != '*' && row(pos) != '_') {
+    // Check if there is something between light, ex. * _ _ _ X _ * _
+    if (hasFoundLight == 1 && row(pos) != '*' || hasFoundLight == 1 && row(pos) != '_') {
+      hasFoundLight = 0;
+      println("Found second light but something is blocking the way, resetting!", row, "pos ", pos)
+      return false;
+    }
+
+    if (hasFoundLight == 1 && row(pos) != '*') {
       hasFoundLight = 0
-      return false
+      println("Found second light ", row, "pos ", pos)
+      return true
     }
 
-    if (row(pos) == '*') {
-      if (hasFoundLight == 1) {
-        hasFoundLight = 0
-//        println("Found light ", row, "pos ", pos)
-        return true
-      } else {
-        hasFoundLight = 1
-      }
+    if (row(pos) == '*' && hasFoundLight == 0) {
+      hasFoundLight = 1
+      return false;
     }
+
     hasLightInRow(pos + 1, row)
+  }
+
+  def inBoundsX(x: Integer, row: Array[Char]): Boolean = {
+    if (x <= row.length && x >= 0) {
+      return true;
+    }
+    return false;
+  }
+
+  def inBoundsY(y: Integer): Boolean = {
+    if (y <= sizeY && y >= 0) {
+      return true;
+    }
+    return false;
+  }
+
+  def lightUpRow(x:Integer, y: Integer, row: Array[Char]): Unit = {
+    var xPos = x;
+    while (xPos <= row.length) {
+      if (row(xPos) == '_') {
+        var rown = row.updated(xPos, 'k')
+        solutionArray = solutionArray.updated(y, String.valueOf(rown))
+      } else {
+        return;
+      }
+      xPos += 1;
+    }
   }
 
   def zeroMatch(x: Integer, y: Integer, row: Array[Char], prevRow: Array[Char], nextRow: Array[Char]) = {
@@ -96,35 +165,18 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
   def DefiniteOneMatch(x: Integer, y: Integer, row: Array[Char], prevRow: Array[Char], nextRow: Array[Char]): Unit = {
 
-    println("x", x, "y", y, "X in bounds", inBoundsX(x, row), "Y in bounds", inBoundsY(y), row(x));
-
-    def inBoundsX(x: Integer, row: Array[Char]): Boolean = {
-      if (x <= row.length && x >= 0) {
-        return true;
-      }
-      return false;
-    }
-
-    def inBoundsY(y: Integer): Boolean = {
-      if (y <= sizeY && y >= 0) {
-        return true;
-      }
-      return false;
-    }
-
-    if (row(x - 1) != '_') { // Check right
-      if(prevRow(x) != '_' && nextRow(x) != '_') {
-        var rown = row.updated(x + 1, '*');
-        solutionArray = solutionArray.updated(y, String.valueOf(rown));
-      }
-    }
-    else if (row(x + 1) != '_') { // Check left
+    if (x >= 0 && row(x - 1) == '_') { // Check left
       if(prevRow(x) != '_' && nextRow(x) != '_') {
         var rown = row.updated(x - 1, '*');
         solutionArray = solutionArray.updated(y, String.valueOf(rown));
       }
     }
-    else if (nextRow(x) != '_') { //check prev
+    else if (x <= row.length - 1 && row(x + 1) == '_') { // Check right
+      if(prevRow(x) != '_' && nextRow(x) != '_') {
+        var rown = row.updated(x + 1, '*');
+        solutionArray = solutionArray.updated(y, String.valueOf(rown));
+      }
+    } else if (nextRow(x) != '_') { //check prev
       if(row(x+1) != '_' && row(x-1) != '_'){
         var rown = prevRow.updated(x, '*')
         solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
@@ -140,84 +192,88 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
   def DefiniteTwoMatch(x: Integer, y: Integer, row: Array[Char], prevRow: Array[Char], nextRow: Array[Char]) = {
     if(x == 0 && y == 0){ //check first corner
-      var rown = nextRow.updated(x + 1, '*')
+      var rown = row.updated(x + 1, '*')
       solutionArray = solutionArray.updated(y, String.valueOf(rown))
-      rown = row.updated(x, '*')
-      solutionArray = solutionArray.updated(y-1, String.valueOf(rown))
+      rown = nextRow.updated(x, '*')
+      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
     }
+
     //check 2nd corner
-    else if(x == row.length && y == 0){
+    if(x == row.length - 1 && y == 0){
       var rown = nextRow.updated(x, '*')
       solutionArray = solutionArray.updated(y+1, String.valueOf(rown))
       rown = row.updated(x-1, '*')
       solutionArray = solutionArray.updated(y, String.valueOf(rown))
-    } //3rd corner
-    else if(y == sizeY && x == 0){
+    }
+
+    //3rd corner
+    if(y == sizeY - 1 && x == 0){
       var rown = prevRow.updated(x, '*')
       solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
       rown = row.updated(x+1, '*')
       solutionArray = solutionArray.updated(y, String.valueOf(rown))
-    } //4th corner
-    else if(y == sizeY && x == row.length){
-      var rown = prevRow.updated(x, '*')
-      solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
-      rown = row.updated(x-1, '*')
-      solutionArray = solutionArray.updated(y, String.valueOf(rown))
-    }
-    
-    //x+1 && x-1 are unavailable
-    else if (x+1 != '_' && x-1 != '_'){
-      var rown = prevRow.updated(x, '*')
-      solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
-      rown = nextRow.updated(x, '*')
-      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
     }
 
-    //prev and nextRow are unavailable
-    else if(prevRow(x) != '_' &&  nextRow(x) != '_'){
-      var rown = row.updated(x + 1, '*')
-      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+    //4th corner
+    if(y == sizeY - 1 && x == row.length - 1){
+      var rown = prevRow.updated(x, '*')
+      solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
       rown = row.updated(x - 1, '*')
       solutionArray = solutionArray.updated(y, String.valueOf(rown))
     }
-    
-    //nextrow && x-1
-    else if(nextRow(x) != '_' && row(x-1) != '_'){
-      var rown = row.updated(x - 1, '*')
-      solutionArray = solutionArray.updated(y, String.valueOf(rown))
-      rown = prevRow.updated(x, '*')
-      solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
-    }
 
-    //nextrow && x+1
-    else if(prevRow(x) != '_' && row(x + 1) != '_'){
-      var rown = row.updated(x + 1, '*')
-      solutionArray = solutionArray.updated(x + 1, String.valueOf(rown))
-      rown = nextRow.updated(x, '*')
-      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
-    }
-    //prev && x-1
-    else if(prevRow(x) != '_' && row(x-1) !=  '_'){
-      var rown = nextRow.updated(x, '*') //y???
-      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
-      rown = row.updated(x+1, '*')
-      solutionArray = solutionArray.updated(y, String.valueOf(rown))
-    }
-    //prev && x+1
-    else if(prevRow(x) != '_' && row(x+1) != '_'){
-      var rown = nextRow.updated(x, '*') //y???
-      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
-      rown = row.updated(x + 1, '*')
-      solutionArray = solutionArray.updated(y, String.valueOf(rown))
-    }
+//    //x+1 && x-1 are unavailable, check for light bulbs
+//    if (row(x+1) != '_' && row(x-1) != '_' && row(x+1) != '*' && row(x-1) != '*'){
+//      var rown = prevRow.updated(x, '*')
+//      solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
+//      rown = nextRow.updated(x, '*')
+//      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
+//    }
+//
+//    //prev and nextRow are unavailable
+//    else if(prevRow(x) != '_' &&  nextRow(x) != '_' && prevRow(x) != '*' &&  nextRow(x) != '*'){
+//      var rown = row.updated(x + 1, '*')
+//      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+//      rown = row.updated(x - 1, '*')
+//      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+//    }
+//
+//    //nextrow && x-1
+//    else if(nextRow(x) != '_' || nextRow(x) != '*' || !nextRow(x).isDigit && row(x-1) != '_' || row(x-1) != '*' || !row(x-1).isDigit){
+//      var rown = row.updated(x - 1, '*')
+//      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+//      rown = prevRow.updated(x, '*')
+//      solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
+//    }
+//
+//    //nextrow && x+1
+//    else if(prevRow(x) != '_' && row(x + 1) != '_'){
+//      var rown = row.updated(x + 1, '*')
+//      solutionArray = solutionArray.updated(x + 1, String.valueOf(rown))
+//      rown = nextRow.updated(x, '*')
+//      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
+//    }
+//    //prev && x-1
+//    else if(prevRow(x) != '_' && row(x-1) !=  '_'){
+//      var rown = nextRow.updated(x, '*') //y???
+//      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
+//      rown = row.updated(x+1, '*')
+//      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+//    }
+//    //prev && x+1
+//    else if(prevRow(x) != '_' && row(x+1) != '_'){
+//      var rown = nextRow.updated(x, '*') //y???
+//      solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
+//      rown = row.updated(x + 1, '*')
+//      solutionArray = solutionArray.updated(y, String.valueOf(rown))
+//    }
     // more cases? Doubt***
-
-
   }
 
 
   def DefiniteThreeMatch(x: Integer, y: Integer, row: Array[Char], prevRow: Array[Char], nextRow: Array[Char]) = {
-    if (row(x - 1) != '_'){ //check if left unavailable
+
+    if (row(x - 1) != '_' || !inBoundsX(x - 1, row)){ //check if left unavailable
       var rown = row.updated(x + 1, '*')
       solutionArray = solutionArray.updated(y, String.valueOf(rown))
       rown = nextRow.updated(x, '*')
@@ -226,7 +282,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
     }
 
-    else if(row(x + 1) != '_'){ //check if right is unavailable
+    else if(row(x + 1) != '_' || !inBoundsX(x + 1, row)){ //check if right is unavailable
       var rown = row.updated(x - 1, '*')
       solutionArray = solutionArray.updated(y, String.valueOf(rown))
       rown = nextRow.updated(x, '*')
@@ -235,7 +291,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
     }
 
-    else if(prevRow(x) != '_'){ //check above
+    else if(prevRow(x) != '_' || !inBoundsY(y)){ //check above
       var rown = row.updated(x - 1, '*')
       solutionArray = solutionArray.updated(y, String.valueOf(rown))
       rown = row.updated(x + 1, '*')
@@ -244,7 +300,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       solutionArray = solutionArray.updated(y + 1, String.valueOf(rown))
     }
 
-    else if(nextRow(x) != '_'){ //check below
+    else if(nextRow(x) != '_' || !inBoundsY(y)){ //check below
       var rown = row.updated(x - 1, '*')
       solutionArray = solutionArray.updated(y, String.valueOf(rown))
       rown = row.updated(x + 1, '*')
@@ -364,6 +420,10 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     rown = row.updated(prevRow(x), '*');
     solutionArray = solutionArray.updated(y - 1, String.valueOf(rown))
   }
+
+  walk();
+
+  println(solutionArray.map(_.mkString(" ")).mkString("\n"));
 
   override def toString: String = {
     s"${sizeX}x${sizeY} -->\n${solution}"
