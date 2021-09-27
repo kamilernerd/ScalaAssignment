@@ -30,7 +30,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     gameBoard.foreach((cell: Square) => {
       cell.getValue() match {
         case '0' => zeroMatch(cell)
-        case '1' => definiteOneMatch(cell)
+//        case '1' => definiteOneMatch(cell)
         case '2' => definiteTwoMatch(cell)
         case '3' => definiteThreeMatch(cell)
         case _ => cell
@@ -102,19 +102,19 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
   }
 
   // x is index in row
-  def checkForLightInColumn(x: Int): Boolean = {
+  def noLightInColumn(x: Int): Boolean = {
     var column = getColumn(x)
 
     var foundSomething = 0
     for (k <- 1 until column.length) {
-      if (column(k).isNot('_')) {
+      if (column(k).is('*')) {
         if (foundSomething == 0) {
-          println("Found first illegal block at columnt:", column(k))
+//          println("Found first illegal block at columnt:", column(k))
           foundSomething = 1
         }
 
         if (foundSomething == 1) {
-          println("Found an illegal block at columnt:", column(k))
+//          println("Found an illegal block at columnt:", column(k))
           return false
         }
       }
@@ -124,21 +124,19 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
   }
 
   // y is row
-  def checkForLightInRow(y: Int): Boolean = {
+  def noLightInRow(y: Int): Boolean = {
     var row = getRow(y)
-
-    println(row)
 
     var foundSomething = 0
     for (k <- 1 until row.length) {
       if (row(k).isNot('_')) {
         if (foundSomething == 0) {
-          println("Found first illegal block in row:", row(k))
+//          println("Found first illegal block in row:", row(k))
           foundSomething = 1
         }
 
         if (foundSomething == 1) {
-          println("Found an illegal block at columnt:", row(k))
+//          println("Found an illegal block at columnt:", row(k))
           return false
         }
       }
@@ -195,9 +193,9 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
   def definiteOneMatch(cell: Square) = {
     // Check left
     if (getSquare(cell.x - 1, cell.y).is('_')) {
-      if (getSquare(cell.x, cell.y - 1).isNot('_') && // Above
-        getSquare(cell.x,cell.y + 1).isNot('_') && // Below
-        getSquare(cell.x + 1, cell.y).isNot('_') // Right
+      if ((getSquare(cell.x, cell.y - 1).isNot('_') || cell.y == 0) && // Above
+        (getSquare(cell.x, cell.y + 1).isNot('_') || cell.y == sizeY) && // Below
+        (getSquare(cell.x + 1, cell.y).isNot('_') || x == sizeX) // Right
       ) {
         setValue(cell.x - 1, cell.y, '*')
       }
@@ -243,22 +241,51 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     }
 
     // top right
-    if (cell.x == sizeX - 1 && cell.y == 0) {
+    else if (cell.x == sizeX - 1 && cell.y == 0) {
       setValue(cell.x - 1, cell.y, '*')
       setValue(cell.x, cell.y + 1, '*')
     }
 
     // bottom left
-    if (cell.y == sizeY - 1 && cell.x == 0) {
+    else if (cell.y == sizeY - 1 && cell.x == 0) {
       setValue(cell.x, cell.y - 1, '*')
       setValue(cell.x + 1, cell.y, '*')
     }
 
     // bottom right
-    if (cell.y == sizeY - 1 && cell.x == sizeX - 1) {
+    else if (cell.y == sizeY - 1 && cell.x == sizeX - 1) {
       setValue(cell.x, cell.y - 1, '*')
       setValue(cell.x - 1, cell.y, '*')
     }
+
+    // Left + right
+    if (getSquare(cell.x - 1, cell.y).is('_') && getSquare(cell.x + 1, cell.y).is('_')) {
+
+      // Check if valid placement in left column
+      if (noLightInColumn(cell.x - 1)) {
+        setValue(cell.x - 1, cell.y, '*')
+      }
+
+      if (noLightInColumn(cell.x + 1)) {
+        setValue(cell.x + 1, cell.y, '*')
+      }
+    }
+
+    if (getSquare(cell.x, cell.y - 1).is('_') && getSquare(cell.x, cell.y + 1).is('_')) {
+      val isLeftCellEmpty =
+        getSquare(cell.x - 1, cell.y).isNot('*')
+      val isRightCellEmpty =
+        getSquare(cell.x + 1, cell.y).isNot('*')
+
+      if (noLightInRow(cell.y - 1) && noLightInColumn(cell.x) && isLeftCellEmpty) {
+        setValue(cell.x, cell.y - 1, '*')
+      }
+
+      if (noLightInRow(cell.y + 1) && noLightInColumn(cell.y - 1) && isRightCellEmpty) {
+        setValue(cell.x, cell.y + 1, '*')
+      }
+    }
+
   }
 
   def definiteThreeMatch(cell: Square) = {
@@ -321,7 +348,60 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
   }
 
   def twoMatch(cell: Square): Unit = {
+    /**
+     *  Left + above ---
+     *  Left + below ---
+     *  Right + above ---
+     *  Right + below ---
+     */
 
+    // Left + above
+    if (getSquare(cell.x - 1, cell.y).is('_') && getSquare(cell.x, cell.y - 1).is('_')) {
+      if (noLightInColumn(cell.x - 1)) {
+        setValue(cell.x - 1, cell.y, '*')
+      }
+
+      if (noLightInRow(cell.y - 1)) {
+        setValue(cell.x, cell.y - 1, '*')
+      }
+    }
+
+    // Left + below
+    else if (getSquare(cell.x - 1, cell.y).is('_') && getSquare(cell.x, cell.y + 1).is('_')) {
+      if (noLightInColumn(cell.x - 1)) {
+        setValue(cell.x - 1, cell.y, '*')
+      }
+
+      if (noLightInRow(cell.y + 1)) {
+        setValue(cell.x, cell.y + 1, '*')
+      }
+    }
+
+    // Right + above
+    else if (getSquare(cell.x + 1, cell.y).is('_') && getSquare(cell.x, cell.y - 1).is('_')) {
+      if (noLightInColumn(cell.x + 1)) {
+        setValue(cell.x + 1, cell.y, '*')
+      }
+
+      if (noLightInColumn(cell.y - 1)) {
+        if (noLightInRow(cell.y - 1)) {
+          setValue(cell.x, cell.y - 1, '*')
+        }
+      } else {
+        setValue(cell.x, cell.y + 1, '*')
+      }
+    }
+
+    // Right + below
+    else if (getSquare(cell.x + 1, cell.y).is('*') && getSquare(cell.x, cell.y + 1).is('_')) {
+      if (noLightInColumn(cell.x + 1)) {
+        setValue(cell.x + 1, cell.y, '*')
+      }
+
+      if (noLightInRow(cell.y - 1)) {
+        setValue(cell.x, cell.y - 1, '*')
+      }
+    }
   }
 
   def fourMatch(cell: Square) = {
