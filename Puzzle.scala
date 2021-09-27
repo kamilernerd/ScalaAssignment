@@ -37,6 +37,13 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       }
     })
 
+    gameBoard.foreach((cell: Square) => {
+      cell.getValue() match {
+        case '2' => twoMatch(cell)
+        case _ => cell
+      }
+    })
+
     println(prettyPrint())
 
     return new Puzzle(x, y, solution)
@@ -98,21 +105,46 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
   def checkForLightInColumn(x: Int): Boolean = {
     var column = getColumn(x)
 
-    var hasFoundLight = 0
+    var foundSomething = 0
+    for (k <- 1 until column.length) {
+      if (column(k).isNot('_')) {
+        if (foundSomething == 0) {
+          println("Found first illegal block at columnt:", column(k))
+          foundSomething = 1
+        }
 
-    var k = 0
-    for (k <- 0 until column.length) {
-      if (column(k).is('*') && hasFoundLight == 0) {
-        hasFoundLight += 1
-        //println("found light in row")
-      } else if ((column(k).is('*') && hasFoundLight == 1) || (column(k).is('X') || column(k).getValue().isDigit)) {
-        //println("found light in row and another one or something else")
-        return true
-      } else {
-        return false
+        if (foundSomething == 1) {
+          println("Found an illegal block at columnt:", column(k))
+          return false
+        }
       }
     }
-    return false
+
+    return true
+  }
+
+  // y is row
+  def checkForLightInRow(y: Int): Boolean = {
+    var row = getRow(y)
+
+    println(row)
+
+    var foundSomething = 0
+    for (k <- 1 until row.length) {
+      if (row(k).isNot('_')) {
+        if (foundSomething == 0) {
+          println("Found first illegal block in row:", row(k))
+          foundSomething = 1
+        }
+
+        if (foundSomething == 1) {
+          println("Found an illegal block at columnt:", row(k))
+          return false
+        }
+      }
+    }
+
+    return true
   }
 
   def setValue(x: Int,y: Int, value: Char): Boolean = {
@@ -142,6 +174,10 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       gameBoard = gameBoard.filter(_ != square)
       square = square.setValue(value)
       gameBoard = gameBoard :+ square
+
+      // Make sure to sort IT!!!!!
+      gameBoard = gameBoard.sortBy((square: Square) => square.x).sortBy((square: Square) => square.y)
+
       return true;
     }
   }
@@ -282,6 +318,10 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     if (getSquare(cell.x, cell.y + 1).getValue() == '_') {
       setValue(cell.x, cell.y + 1, '~')
     }
+  }
+
+  def twoMatch(cell: Square): Unit = {
+
   }
 
   def fourMatch(cell: Square) = {
