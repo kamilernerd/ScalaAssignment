@@ -72,8 +72,10 @@ object PuzzleSolver extends App {
   // arg 0 ./teacher-tests/ValidationData/puzzles/0_4x7_20_0_4x7:a2gBd1e2aBBc1.txt
   // arg 1 ./teacher-tests/ValidationData/solutions/0_4x7_20_0_4x7:a2gBd1e2aBBc1.txt
 
+
+
   // arg 0 ./teacher-tests/ValidationData/puzzles/0_8x9_20_0_8x9:aBb1hBBc2b1a1a21g1h2dBc2a2c02cBe1b.txt
-  // arg 1 ./teacher-tests/ValidationData/solutions/0_8x9_20_0_8x9:aBb1hBBc2b1a1a21g1h2dBc2a2c02cBe1b.txt
+  // arg 1 ./teacher-tests/ValidationData/puzzles/0_8x9_20_0_8x9:aBb1hBBc2b1a1a21g1h2dBc2a2c02cBe1b.txt ./teacher-tests/ValidationData/solutions/0_8x9_20_0_8x9:aBb1hBBc2b1a1a21g1h2dBc2a2c02cBe1b.txt
 
   // arg 0 ./teacher-tests/ValidationData/challenges/puzzles/0_20x15_20_0_20x15:e1mBaBdBfBbBf2e20c1cB0cBb3c1d0eBBaB3aBaBaB1b2b212eBB2bBeBdBaBd1b0aBBdBa02c1dBbB2aBf0a10a1a1aBfBBbBbBjBcBdBa2b1c1d4cBBa4e1BaBBa4bBcBaBc1a2bBb3BBf0eBgBa3aBB0d1a1a.txt
   // arg 0 ./teacher-tests/ValidationData/challenges/solutions/0_20x15_20_0_20x15:e1mBaBdBfBbBf2e20c1cB0cBb3c1d0eBBaB3aBaBaB1b2b212eBB2bBeBdBaBd1b0aBBdBa02c1dBbB2aBf0a10a1a1aBfBBbBbBjBcBdBa2b1c1d4cBBa4e1BaBBa4bBcBaBc1a2bBb3BBf0eBgBa3aBB0d1a1a.txt

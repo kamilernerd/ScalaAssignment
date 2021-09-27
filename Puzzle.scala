@@ -30,7 +30,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     gameBoard.foreach((cell: Square) => {
       cell.getValue() match {
         case '0' => zeroMatch(cell)
-//        case '1' => definiteOneMatch(cell)
+        case '1' => definiteOneMatch(cell)
         case '2' => definiteTwoMatch(cell)
         case '3' => definiteThreeMatch(cell)
         case _ => cell
@@ -191,41 +191,42 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
    *
    */
   def definiteOneMatch(cell: Square) = {
-    // Check left
+    // Check left, everything else is unavailable
     if (getSquare(cell.x - 1, cell.y).is('_')) {
-      if ((getSquare(cell.x, cell.y - 1).isNot('_') || cell.y == 0) && // Above
-        (getSquare(cell.x, cell.y + 1).isNot('_') || cell.y == sizeY) && // Below
-        (getSquare(cell.x + 1, cell.y).isNot('_') || x == sizeX) // Right
-      ) {
+      if ((y == 0 || getSquare(cell.x, cell.y - 1).isNot('_')) && // Above
+        (y == sizeY || getSquare(cell.x, cell.y + 1).isNot('_')) && // Below
+        (x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) // Right
+      )
+      {
         setValue(cell.x - 1, cell.y, '*')
       }
     }
 
-    // Check right
+    // Check right, everything else is unavailable
     else if (getSquare(cell.x + 1, cell.y).is('_')) {
-      if (getSquare(cell.x, cell.y - 1).isNot('_') && // Above
-        getSquare(cell.x, cell.y + 1).isNot('_') && // Below
-        getSquare(cell.x - 1, cell.y).isNot('_') // Left
+      if (y == 0 || getSquare(cell.x, cell.y - 1).isNot('_') && // Above
+        (y == sizeY || getSquare(cell.x, cell.y + 1).isNot('_')) && // Below
+        (x == 0 || getSquare(cell.x - 1, cell.y).isNot('_')) // Left
       ) {
         setValue(cell.x + 1, cell.y, '*')
       }
     }
 
-    // Check above
+    // Check above, everything else is unavailable
     else if (getSquare(cell.x, cell.y - 1).is('_')) {
-      if (getSquare(cell.x - 1, cell.y).isNot('_') && // Left
-        getSquare(cell.x + 1, cell.y).isNot('_') && // Right
-        getSquare(cell.x, cell.y + 1).isNot('_') // Below
+      if (y == 0 || getSquare(cell.x - 1, cell.y).isNot('_') && // Left
+        (x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) && // Right
+        (y == sizeY ||getSquare(cell.x, cell.y + 1).isNot('_')) // Below
       ) {
         setValue(cell.x, cell.y - 1, '*')
       }
     }
 
-    // Check below
+    // Check below, everything else is unavailable
     else if (getSquare(cell.x, cell.y + 1).is('_')) {
-      if (getSquare(cell.x - 1, cell.y).isNot('_') && // Left
-        getSquare(cell.x + 1, cell.y).isNot('_') && // Right
-        getSquare(cell.x, cell.y - 1).isNot('_') // Above
+      if ((x == 0 || getSquare(cell.x - 1, cell.y).isNot('_')) && // Left
+        (x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) && // Right
+        (y == 0 || getSquare(cell.x, cell.y - 1).isNot('_')) // Above
       ) {
         setValue(cell.x, cell.y + 1, '*')
       }
