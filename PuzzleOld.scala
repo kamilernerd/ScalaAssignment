@@ -8,7 +8,7 @@ class PuzzleOld(x: Int, y: Int, sol: String) { // just trivial data here
 //  var solutionArray = solution.split("\n");
 
 //  var solutionArray = Array[String](
-//"____1___",
+//     "____1___",
 //     "____XX__",
 //     "__2__1_1",
 //     "_21_____",

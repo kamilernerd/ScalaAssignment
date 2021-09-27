@@ -7,6 +7,20 @@ class Square(xNumber: Int, yNumber: Int, cellValue: Char) {
     return value
   }
 
+  def isNot(char: Char): Boolean = {
+    if (this.getValue() != char) {
+      return true;
+    }
+    return false;
+  }
+
+  def is(char: Char): Boolean = {
+    if (this.getValue() == char) {
+      return true;
+    }
+    return false;
+  }
+
   def setValue(newValue: Char): Square = {
     return new Square(this.x, this.y, newValue);
   }
