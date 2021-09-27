@@ -37,12 +37,12 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       }
     })
 
-    gameBoard.foreach((cell: Square) => {
-      cell.getValue() match {
-        case '2' => twoMatch(cell)
-        case _ => cell
-      }
-    })
+//    gameBoard.foreach((cell: Square) => {
+//      cell.getValue() match {
+//        case '2' => twoMatch(cell)
+//        case _ => cell
+//      }
+//    })
 
     println(prettyPrint())
 
@@ -228,10 +228,10 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
   def definiteOneMatch(cell: Square) = {
     // Check left, everything else is unavailable
-    if (getSquare(cell.x - 1, cell.y).is('_')) {
-      if ((y == 0 || getSquare(cell.x, cell.y - 1).isNot('_')) && // Above
-        (y == sizeY || getSquare(cell.x, cell.y + 1).isNot('_')) && // Below
-        (x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) // Right
+    if (cell.x == 0 || getSquare(cell.x - 1, cell.y).is('_')) {
+      if ((cell.y == 0 || getSquare(cell.x, cell.y - 1).isNot('_')) && // Above
+        (cell.y == sizeY || getSquare(cell.x, cell.y + 1).isNot('_')) && // Below
+        (cell.x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) // Right
       )
       {
         setValue(cell.x - 1, cell.y, '*')
@@ -240,9 +240,9 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
     // Check right, everything else is unavailable
     else if (getSquare(cell.x + 1, cell.y).is('_')) {
-      if (y == 0 || getSquare(cell.x, cell.y - 1).isNot('_') && // Above
-        (y == sizeY || getSquare(cell.x, cell.y + 1).isNot('_')) && // Below
-        (x == 0 || getSquare(cell.x - 1, cell.y).isNot('_')) // Left
+      if (cell.y == 0 || getSquare(cell.x, cell.y - 1).isNot('_') && // Above
+        (cell.y == sizeY || getSquare(cell.x, cell.y + 1).isNot('_')) && // Below
+        (cell.x == 0 || getSquare(cell.x - 1, cell.y).isNot('_')) // Left
       ) {
         setValue(cell.x + 1, cell.y, '*')
       }
@@ -250,9 +250,9 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
     // Check above, everything else is unavailable
     else if (getSquare(cell.x, cell.y - 1).is('_')) {
-      if (y == 0 || getSquare(cell.x - 1, cell.y).isNot('_') && // Left
-        (x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) && // Right
-        (y == sizeY ||getSquare(cell.x, cell.y + 1).isNot('_')) // Below
+      if (cell.y == 0 || getSquare(cell.x - 1, cell.y).isNot('_') && // Left
+        (cell.x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) && // Right
+        (cell.y == sizeY ||getSquare(cell.x, cell.y + 1).isNot('_')) // Below
       ) {
         setValue(cell.x, cell.y - 1, '*')
       }
@@ -260,9 +260,9 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
     // Check below, everything else is unavailable
     else if (getSquare(cell.x, cell.y + 1).is('_')) {
-      if ((x == 0 || getSquare(cell.x - 1, cell.y).isNot('_')) && // Left
-        (x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) && // Right
-        (y == 0 || getSquare(cell.x, cell.y - 1).isNot('_')) // Above
+      if ((cell.x == 0 || getSquare(cell.x - 1, cell.y).isNot('_')) && // Left
+        (cell.x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) && // Right
+        (cell.y == 0 || getSquare(cell.x, cell.y - 1).isNot('_')) // Above
       ) {
         setValue(cell.x, cell.y + 1, '*')
       }

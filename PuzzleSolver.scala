@@ -73,7 +73,7 @@ object PuzzleSolver extends App {
   // arg 1 ./teacher-tests/ValidationData/solutions/0_4x7_20_0_4x7:a2gBd1e2aBBc1.txt
 
 
-
+  
   // arg 0 ./teacher-tests/ValidationData/puzzles/0_8x9_20_0_8x9:aBb1hBBc2b1a1a21g1h2dBc2a2c02cBe1b.txt
   // arg 1 ./teacher-tests/ValidationData/puzzles/0_8x9_20_0_8x9:aBb1hBBc2b1a1a21g1h2dBc2a2c02cBe1b.txt ./teacher-tests/ValidationData/solutions/0_8x9_20_0_8x9:aBb1hBBc2b1a1a21g1h2dBc2a2c02cBe1b.txt
 
