@@ -27,22 +27,15 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       }
     }
 
-    println(gameBoard)
-
     gameBoard.foreach((cell: Square) => {
       cell.getValue() match {
         case '0' => zeroMatch(cell)
         case '1' => definiteOneMatch(cell)
+        case '2' => definiteTwoMatch(cell)
+        case '3' => definiteThreeMatch(cell)
         case _ => cell
       }
     })
-
-//    gameBoard.foreach((cell: Square) => {
-//      cell.getValue() match { //brute force
-//        case '1' => oneMatch(cell)
-//        case _ => cell
-//      }
-//    })
 
     println(prettyPrint())
 
@@ -124,6 +117,25 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
   def setValue(x: Int,y: Int, value: Char): Boolean = {
     var square = getSquare(x, y)
+    var newX = 0
+    var newY = 0
+
+    if (x < 0) {
+      newX = 0
+    }
+
+    if (x > sizeX) {
+      newX = sizeX
+    }
+
+    if (y < 0) {
+      newY = 0
+    }
+
+    if (y > sizeY) {
+      newY = sizeY
+    }
+
     if(square.getValue() == value){
       return false;
     } else {
@@ -145,24 +157,102 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
    *
    */
   def definiteOneMatch(cell: Square) = {
-    if (getSquare(cell.x - 1, cell.y).is('_') && getSquare(cell.x + 1, cell.y).isNot('_')) { // Check left
-      if (getSquare(cell.x, cell.y - 1).getValue() != '_' && getSquare(cell.x, cell.y + 1).getValue() != '_') {
+    // Check left
+    if (getSquare(cell.x - 1, cell.y).is('_')) {
+      if (getSquare(cell.x, cell.y - 1).isNot('_') && // Above
+        getSquare(cell.x,cell.y + 1).isNot('_') && // Below
+        getSquare(cell.x + 1, cell.y).isNot('_') // Right
+      ) {
         setValue(cell.x - 1, cell.y, '*')
       }
     }
-    else if (getSquare(cell.x + 1, cell.y).getValue() == '_' && !checkForLightInColumn(cell.x + 1)) { // Check right
-      if(getSquare(cell.x, cell.y - 1).getValue() != '_' && getSquare(cell.x, cell.y + 1).getValue() != '_') {
+
+    // Check right
+    else if (getSquare(cell.x + 1, cell.y).is('_')) {
+      if (getSquare(cell.x, cell.y - 1).isNot('_') && // Above
+        getSquare(cell.x, cell.y + 1).isNot('_') && // Below
+        getSquare(cell.x - 1, cell.y).isNot('_') // Left
+      ) {
         setValue(cell.x + 1, cell.y, '*')
       }
-    } else if (getSquare(cell.x, cell.y + 1).getValue() != '_' && !checkForLightInColumn(cell.x)) { //check prev
-      if(getSquare(cell.x + 1, cell.y).getValue() == '_' && getSquare(cell.x - 1, cell.y).getValue() == '_') {
+    }
+
+    // Check above
+    else if (getSquare(cell.x, cell.y - 1).is('_')) {
+      if (getSquare(cell.x - 1, cell.y).isNot('_') && // Left
+        getSquare(cell.x + 1, cell.y).isNot('_') && // Right
+        getSquare(cell.x, cell.y + 1).isNot('_') // Below
+      ) {
         setValue(cell.x, cell.y - 1, '*')
       }
     }
-    else if (getSquare(cell.x, cell.y - 1).getValue() != '_' && !checkForLightInColumn(cell.x)) { //check next
-      if(getSquare(cell.x + 1, cell.y).getValue() == '_' && getSquare(cell.x - 1, cell.y).getValue() == '_') {
+
+    // Check below
+    else if (getSquare(cell.x, cell.y + 1).is('_')) {
+      if (getSquare(cell.x - 1, cell.y).isNot('_') && // Left
+        getSquare(cell.x + 1, cell.y).isNot('_') && // Right
+        getSquare(cell.x, cell.y - 1).isNot('_') // Above
+      ) {
         setValue(cell.x, cell.y + 1, '*')
       }
+    }
+  }
+
+  def definiteTwoMatch(cell: Square) = {
+
+    // top left
+    if (cell.x == 0 && cell.y == 0) { //check first corner
+      setValue(cell.x, cell.y + 1, '*')
+      setValue(cell.x + 1, cell.y, '*')
+    }
+
+    // top right
+    if (cell.x == sizeX - 1 && cell.y == 0) {
+      setValue(cell.x - 1, cell.y, '*')
+      setValue(cell.x, cell.y + 1, '*')
+    }
+
+    // bottom left
+    if (cell.y == sizeY - 1 && cell.x == 0) {
+      setValue(cell.x, cell.y - 1, '*')
+      setValue(cell.x + 1, cell.y, '*')
+    }
+
+    // bottom right
+    if (cell.y == sizeY - 1 && cell.x == sizeX - 1) {
+      setValue(cell.x, cell.y - 1, '*')
+      setValue(cell.x - 1, cell.y, '*')
+    }
+  }
+
+  def definiteThreeMatch(cell: Square) = {
+    // Check left is unavailable
+    if (cell.x - 1 <= 0) {
+      println("Case left")
+      setValue(cell.x + 1, cell.y, '*')
+      setValue(cell.x, cell.y + 1, '*')
+      setValue(cell.x, cell.y - 1, '*')
+    }
+
+    else if (cell.x + 1 >= sizeX) { // Check right is unavailable
+      println("Case right")
+      setValue(cell.x - 1, cell.y, '*')
+      setValue(cell.x, cell.y + 1, '*')
+      setValue(cell.x, cell.y - 1, '*')
+    }
+
+    else if(cell.y - 1 <= 0) { // Check above is unavailable
+      println("Case above")
+      setValue(cell.x - 1, cell.y, '*')
+      setValue(cell.x + 1, cell.y, '*')
+      setValue(cell.x, cell.y + 1, '*')
+    }
+
+    else if(cell.y + 1 >= sizeY) { // Check below is unavailable
+      println("Case below")
+      setValue(cell.x - 1, cell.y, '*')
+      setValue(cell.x + 1, cell.y, '*')
+      setValue(cell.x, cell.y - 1, '*')
     }
   }
 
