@@ -268,6 +268,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       }
     }
   }
+  
 
   def definiteTwoMatch(cell: Square) = {
 
