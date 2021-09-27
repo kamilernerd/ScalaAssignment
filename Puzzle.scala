@@ -150,14 +150,14 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
   }
 
   // x is index in row
-  def noNumberInColumn(x: Int, start: Int = 0): Boolean = {
+  def noNumberInColumn(x: Int, start: Int = 0): Int = {
     var column = getColumn(x)
     for (k <- start until column.length) {
-      if (column(k).getValue().equals(2) || column(k).getValue().equals(3)) {
-        return false
+      if (column(k).getValue().isDigit) {
+        return 0
       }
     }
-    true
+    1
   }
 
   def setValue(x: Int,y: Int, value: Char): Boolean = {
@@ -407,26 +407,26 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     if (getSquare(cell.x - 1, cell.y).is('_') && getSquare(cell.x + 1, cell.y).is('_')) {
       // Check if valid placement in left column
       if (noLightInColumn(cell.x - 1)) {
-        if (noNumberInColumn(cell.x - 1)) {
+        if (noNumberInColumn(cell.x - 1) == 1) {
+          setValue(cell.x - 1, cell.y, '*')
+        } else if (noNumberInColumn(cell.x - 1) == 0) {
           if (getSquare(cell.x, cell.y - 1).is('_')) {
             setValue(cell.x, cell.y - 1, '*')
           } else if (getSquare(cell.x, cell.y + 1).is('_')) {
             setValue(cell.x, cell.y + 1, '*')
           }
-        } else {
-          setValue(cell.x - 1, cell.y, '*')
         }
       }
 
       if (noLightInColumn(cell.x + 1)) {
-        if (noNumberInColumn(cell.x + 1)) {
+        if (noNumberInColumn(cell.x + 1) == 0) {
+          setValue(cell.x + 1, cell.y, '*')
+        } else if (noNumberInColumn(cell.x + 1) == 1) {
           if (getSquare(cell.x, cell.y + 1).is('_')) {
             setValue(cell.x, cell.y + 1, '*')
           } else if (getSquare(cell.x, cell.y - 1).is('_')) {
             setValue(cell.x, cell.y - 1, '*')
           }
-        } else {
-          setValue(cell.x + 1, cell.y, '*')
         }
       }
     }
