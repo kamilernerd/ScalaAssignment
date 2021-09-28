@@ -65,7 +65,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     return tmp.grouped(sizeX).mkString("\n")
   }
 
-  def getSquare(x: Int, y: Int): Square = {
+  def getSquare(x: Int,y: Int): Square = {
     var newX = x
     var newY = y
 
@@ -90,7 +90,6 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
   /**
    * x param is actually index in row
-   *
    * @param y
    * @return
    */
@@ -100,7 +99,6 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
   /**
    * y param is actually position from top to bottom
-   *
    * @param x
    * @return
    */
@@ -168,11 +166,11 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
   }
 
   def isLightConnectedToOne(cell: Square): Boolean = {
-    if (cell.x > 0 && getSquare(cell.x - 1, cell.y).is('*')) { // check left
+    if (cell.x > 0 && getSquare(cell.x - 1, cell.y).is('*')) {      // check left
       return true
     }
 
-    if (cell.x + 1 < sizeX && getSquare(cell.x + 1, cell.y).is('*')) { // check right
+    if (cell.x + 1 < sizeX && getSquare(cell.x + 1, cell.y).is('*')) {  // check right
       return true
     }
 
@@ -187,7 +185,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     return false
   }
 
-  def setValue(x: Int, y: Int, value: Char): Boolean = {
+  def setValue(x: Int,y: Int, value: Char): Boolean = {
     var square = getSquare(x, y)
     var newX = 0
     var newY = 0
@@ -208,7 +206,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       newY = sizeY
     }
 
-    if (square.getValue() == value) {
+    if(square.getValue() == value){
       return false;
     } else {
       gameBoard = gameBoard.filter(_ != square)
@@ -229,36 +227,45 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
   /*
   Definite function that loops over rows with ~
    */
-  def cellChangeToTilde(cell: Square, xCord: Int, yCord: Int): Unit = { //SEND SQUARE WHERE LIGHTBULB IS PLACED && WHICH CELL HAS LIGHTBULB
+  def cellChangeToTilde(cell: Square, xCord: Int, yCord: Int): Unit ={  //SEND SQUARE WHERE LIGHTBULB IS PLACED && WHICH CELL HAS LIGHTBULB
 
-    val xVal = xCord //xVal is to keep a copy of original spot SHOULD NOT BE MUTABLE
-    val yVal = yCord //yVal is to keep a copy of original spot SHOULD NOT BE MUTABLE
+    val xVal = xCord       //xVal is to keep a copy of original spot SHOULD NOT BE MUTABLE
+    val yVal = yCord       //yVal is to keep a copy of original spot SHOULD NOT BE MUTABLE
 
-    var xVal1 = xCord + 1 //to loop over right side
-    var xVal2 = xCord - 1 //to loop over left side
+    var xVal1 = xCord + 1   //to loop over right side
+    var xVal2 = xCord - 1   //to loop over left side
 
-    var yVal1 = yCord + 1 //to loop below
-    var yVal2 = yCord - 1 //to loop above
+    var yVal1 = yCord + 1   //to loop below
+    var yVal2 = yCord - 1   //to loop above
 
-    while (xVal1 < sizeX && (getSquare(xVal1, yVal).is('_') || getSquare(xVal1, yVal).is('~'))) { //loop over right side till either something a wall is hit or edge
+    while (xVal1 < sizeX && getSquare(xVal1, yVal).is('_')) { //loop over right side till either something a wall is hit or edge
       setValue(xVal1, yVal, '~')
       xVal1 += 1
     }
 
-    while (xVal2 >= 0 && (getSquare(xVal2, yVal).is('~') || (getSquare(xVal2, yVal).is('_')))) { //loop over left side till either something a wall is hit or edge
+    while (xVal2 >= 0 && (getSquare(xVal2, yVal).is('_'))) { //loop over left side till either something a wall is hit or edge
       setValue(xVal2, yVal, '~')
       xVal2 -= 1
     }
 
-    while (yVal1 < sizeY && (getSquare(xVal, yVal1).is('~') || getSquare(xVal, yVal1).is('_'))) { //loop over below, till either something a wall is hit or edge
+    while(yVal1 < sizeY && getSquare(xVal, yVal1).is('_')){ //loop over below, till either something a wall is hit or edge
       setValue(xVal, yVal1, '~')
       yVal1 += 1
     }
 
-    while (yVal2 >= 0 && (getSquare(xVal, yVal2).is('~') || getSquare(xVal, yVal2).is('_'))) { // loop over above, till either something a wall is hit or edge
-      setValue(xVal, yVal2, '~')
+    if (getSquare(xVal, yVal2).is('_')) {
+      while(yVal2 >= 0 && (getSquare(xVal, yVal2).is('_'))) { // loop over above, till either something a wall is hit or edge
+        setValue(xVal, yVal2, '~')
+        yVal2 -= 1
+      }
+    } else {
       yVal2 -= 1
+      while(yVal2 >= 0 && (getSquare(xVal, yVal2).is('_'))) { // loop over above, till either something a wall is hit or edge
+        setValue(xVal, yVal2, '~')
+        yVal2 -= 1
+      }
     }
+
   }
 
   /**
@@ -268,12 +275,12 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
    */
   def zeroMatch(cell: Square) = {
     // Case 1 - Check left
-    if (cell.x - 1 >= 0 && getSquare(cell.x - 1, cell.y).getValue() == '_') {
+    if (getSquare(cell.x - 1, cell.y).getValue() == '_') {
       setValue(cell.x - 1, cell.y, '~')
     }
 
     // Case 2 - Check right
-    if (cell.x + 1 < sizeX || getSquare(cell.x + 1, cell.y).getValue() == '_') {
+    if (getSquare(cell.x + 1, cell.y).getValue() == '_') {
       setValue(cell.x + 1, cell.y, '~')
     }
 
@@ -294,7 +301,8 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       if ((cell.y == 0 || getSquare(cell.x, cell.y - 1).isNot('_')) && // Above
         (cell.y + 1 < sizeY && getSquare(cell.x, cell.y + 1).isNot('_')) && // Below
         (cell.x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) // Right
-      ) {
+      )
+      {
         setValue(cell.x - 1, cell.y, '*')
         cellChangeToTilde(cell, cell.x - 1, cell.y)
       }
@@ -315,7 +323,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     else if ((getSquare(cell.x, cell.y - 1).is('_')) && !isLightConnectedToOne(cell)) {
       if (cell.y == 0 || getSquare(cell.x - 1, cell.y).isNot('_') && // Left
         (cell.x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) && // Right
-        (cell.y == sizeY || getSquare(cell.x, cell.y + 1).isNot('_')) // Below
+        (cell.y == sizeY ||getSquare(cell.x, cell.y + 1).isNot('_')) // Below
       ) {
         setValue(cell.x, cell.y - 1, '*')
         cellChangeToTilde(cell, cell.x, cell.y - 1)
@@ -447,14 +455,14 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       setValue(cell.x, cell.y - 1, '*')
     }
 
-    else if (cell.y - 1 <= 0) { // Check above is unavailable
+    else if(cell.y - 1 <= 0) { // Check above is unavailable
       println("Case above")
       setValue(cell.x - 1, cell.y, '*')
       setValue(cell.x + 1, cell.y, '*')
       setValue(cell.x, cell.y + 1, '*')
     }
 
-    else if (cell.y + 1 >= sizeY) { // Check below is unavailable
+    else if(cell.y + 1 >= sizeY) { // Check below is unavailable
       println("Case below")
       setValue(cell.x - 1, cell.y, '*')
       setValue(cell.x + 1, cell.y, '*')
@@ -469,11 +477,11 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
    */
 
   /**
-   * Left + right ---
-   * Left + above ---
-   * Left + below ---
-   * Right + above ---
-   * Right + below ---
+   *  Left + right ---
+   *  Left + above ---
+   *  Left + below ---
+   *  Right + above ---
+   *  Right + below ---
    */
   def twoMatch(cell: Square): Unit = {
     // Left + right
@@ -528,9 +536,9 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       }
     }
     // Right
-    else if (getSquare(cell.x + 1, cell.y).is('*')
-      && (getSquare(cell.x - 1, cell.y).isNot('*') || getSquare(cell.x, cell.y - 1).isNot('*') || getSquare(cell.x, cell.y + 1).isNot('*')
-      )) {
+    else if (getSquare(cell.x + 1, cell.y).is('*') &&
+      (getSquare(cell.x - 1, cell.y).isNot('*') || getSquare(cell.x, cell.y - 1).isNot('*') || getSquare(cell.x, cell.y + 1).isNot('*'))
+    ) {
       // Check if can be placed to the left
       if (getSquare(cell.x - 1, cell.y).is('_')) {
         setValue(cell.x - 1, cell.y, '*')
@@ -543,6 +551,12 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       else if (getSquare(cell.x, cell.y + 1).is('*')) {
         setValue(cell.x, cell.y + 1, '*')
       }
+    }
+    // Above
+    else if (getSquare(cell.x, cell.y).is('*') &&
+      (getSquare(cell.x - 1, cell.y).isNot('*'))
+    ) {
+
     }
 
 
