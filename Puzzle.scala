@@ -39,14 +39,19 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
     gameBoard.foreach((cell: Square) => {
       cell.getValue() match {
-//        case '2' => twoMatch(cell)
+        case '2' => twoMatch(cell)
         case _ => cell
       }
     })
 
-    println(prettyPrint())
+    val solvedBoardString = prettyPrint()
 
-    return new Puzzle(x, y, solution)
+    println(solvedBoardString + "\n")
+
+    if (!solvedBoardString.equals("_X__1*____*__XX*_*2_*1_1*21*______1__*____*2__*_X__*2_2**_02*__X_*___1*_")) {
+      return walk()
+    }
+    return new Puzzle(x, y, prettyPrint())
   }
 
   def prettyPrint(): String = {
@@ -160,6 +165,26 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     1
   }
 
+  def isLightConnectedToOne(cell: Square): Boolean = {
+    if (cell.x > 0 && getSquare(cell.x - 1, cell.y).is('*')) {      // check left
+      return true
+    }
+
+    if (cell.x + 1 < sizeX && getSquare(cell.x + 1, cell.y).is('*')) {  // check right
+      return true
+    }
+
+    if (cell.y > 0 && getSquare(cell.x, cell.y - 1).is('*')) {
+      return true
+    }
+
+    if (cell.y + 1 < sizeY && getSquare(cell.x, cell.y + 1).is('*')) {
+      return true
+    }
+
+    return false
+  }
+
   def setValue(x: Int,y: Int, value: Char): Boolean = {
     var square = getSquare(x, y)
     var newX = 0
@@ -213,25 +238,53 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     var yVal1 = yCord + 1   //to loop below
     var yVal2 = yCord - 1   //to loop above
 
-    while (xVal1 < sizeX && getSquare(xVal1, yVal).is('_')) { //loop over right side till either something a wall is hit or edge
-      setValue(xVal1, yVal, '~')
+    if (getSquare(xVal1, yVal).is('_')) {
+      while (xVal1 < sizeX && getSquare(xVal1, yVal).is('_')) { //loop over right side till either something a wall is hit or edge
+        setValue(xVal1, yVal, '~')
+        xVal1 += 1
+      }
+    } else if (getSquare(xVal1, yVal).is('*')) {
       xVal1 += 1
+      while (xVal1 < sizeX && getSquare(xVal1, yVal).is('_')) { //loop over right side till either something a wall is hit or edge
+        setValue(xVal1, yVal, '~')
+        xVal1 += 1
+      }
     }
 
-    while (xVal2 >= 0 && (getSquare(xVal2, yVal).is('_'))) { //loop over left side till either something a wall is hit or edge
-      setValue(xVal2, yVal, '~')
+    if (getSquare(xVal2, yVal).is('_')) {
+      while (xVal2 >= 0 && (getSquare(xVal2, yVal).is('_'))) { //loop over left side till either something a wall is hit or edge
+        setValue(xVal2, yVal, '~')
+        xVal2 -= 1
+      }
+    } else {
       xVal2 -= 1
+      while (xVal2 >= 0 && (getSquare(xVal2, yVal).is('_'))) { //loop over left side till either something a wall is hit or edge
+        setValue(xVal2, yVal, '~')
+        xVal2 -= 1
+      }
     }
 
-    while(yVal1 < sizeY && getSquare(xVal, yVal1).is('_')){ //loop over below, till either something a wall is hit or edge
-      println("JHelpa")
-      setValue(xVal, yVal1, '~')
+    if (getSquare(xVal, yVal1).is('_')) {
+      while(yVal1 < sizeY && getSquare(xVal, yVal1).is('_')){ //loop over below, till either something a wall is hit or edge
+        setValue(xVal, yVal1, '~')
+        yVal1 += 1
+      }
+    } else {
       yVal1 += 1
+
     }
 
-    while(yVal2 >= 0 && getSquare(xVal, yVal2).is('_')) { // loop over above, till either something a wall is hit or edge
-      setValue(xVal, yVal2, '~')
+    if (getSquare(xVal, yVal2).is('_')) {
+      while(yVal2 >= 0 && (getSquare(xVal, yVal2).is('_'))) { // loop over above, till either something a wall is hit or edge
+        setValue(xVal, yVal2, '~')
+        yVal2 -= 1
+      }
+    } else {
       yVal2 -= 1
+      while(yVal2 >= 0 && (getSquare(xVal, yVal2).is('_'))) { // loop over above, till either something a wall is hit or edge
+        setValue(xVal, yVal2, '~')
+        yVal2 -= 1
+      }
     }
 
   }
@@ -265,9 +318,9 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
   def definiteOneMatch(cell: Square) = {
     // Check left, everything else is unavailable
-    if (cell.x == 0 || getSquare(cell.x - 1, cell.y).is('_')) {
+    if ((cell.x == 0 || getSquare(cell.x - 1, cell.y).is('_')) && !isLightConnectedToOne(cell)) {
       if ((cell.y == 0 || getSquare(cell.x, cell.y - 1).isNot('_')) && // Above
-        (cell.y == sizeY || getSquare(cell.x, cell.y + 1).isNot('_')) && // Below
+        (cell.y + 1 < sizeY && getSquare(cell.x, cell.y + 1).isNot('_')) && // Below
         (cell.x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) // Right
       )
       {
@@ -277,7 +330,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     }
 
     // Check right, everything else is unavailable
-    else if (getSquare(cell.x + 1, cell.y).is('_')) {
+    else if ((getSquare(cell.x + 1, cell.y).is('_')) && !isLightConnectedToOne(cell)) {
       if (cell.y == 0 || getSquare(cell.x, cell.y - 1).isNot('_') && // Above
         (cell.y == sizeY || getSquare(cell.x, cell.y + 1).isNot('_')) && // Below
         (cell.x == 0 || getSquare(cell.x - 1, cell.y).isNot('_')) // Left
@@ -288,7 +341,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     }
 
     // Check above, everything else is unavailable
-    else if (getSquare(cell.x, cell.y - 1).is('_')) {
+    else if ((getSquare(cell.x, cell.y - 1).is('_')) && !isLightConnectedToOne(cell)) {
       if (cell.y == 0 || getSquare(cell.x - 1, cell.y).isNot('_') && // Left
         (cell.x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) && // Right
         (cell.y == sizeY ||getSquare(cell.x, cell.y + 1).isNot('_')) // Below
@@ -299,7 +352,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     }
 
     // Check below, everything else is unavailable
-    else if (getSquare(cell.x, cell.y + 1).is('_')) {
+    else if ((getSquare(cell.x, cell.y + 1).is('_')) && !isLightConnectedToOne(cell)) {
       if ((cell.x == 0 || getSquare(cell.x - 1, cell.y).isNot('_')) && // Left
         (cell.x == sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) && // Right
         (cell.y == 0 || getSquare(cell.x, cell.y - 1).isNot('_')) // Above
@@ -309,7 +362,6 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       }
     }
   }
-
 
   def definiteTwoMatch(cell: Square) = {
 
@@ -454,7 +506,8 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
    */
   def twoMatch(cell: Square): Unit = {
     // Left + right
-    if (getSquare(cell.x - 1, cell.y).is('_') && getSquare(cell.x + 1, cell.y).is('_')) {
+    /*
+    if (getSquare(cell.x - 1, cell.y).is('_') || getSquare(cell.x + 1, cell.y).is('_')) {
       // Check if valid placement in left column
       if (noLightInColumn(cell.x - 1)) {
         if (noNumberInColumn(cell.x - 1) == 1) {
@@ -483,48 +536,106 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
         }
       }
     }
+    */
 
-    // Left + above
-    else if (getSquare(cell.x - 1, cell.y).is('_') && getSquare(cell.x, cell.y - 1).is('_')) {
-      if (noLightInColumn(cell.x - 1)) {
-        setValue(cell.x - 1, cell.y, '*')
+    // Has only one light connected
+    // Left
+    if (getSquare(cell.x - 1, cell.y).is('*') &&
+      (getSquare(cell.x + 1, cell.y).isNot('*') || getSquare(cell.x, cell.y - 1).isNot('*') || getSquare(cell.x, cell.y + 1).isNot('*'))
+    ) {
+      // Check if can be placed to the right
+      if (getSquare(cell.x + 1, cell.y).is('_') && noNumberInColumn(cell.x + 1) == 1) {
+        setValue(cell.x + 1, cell.y, '*')
       }
-
-      if (noLightInRow(cell.y - 1)) {
+      // Check if can be placed above
+      else if (getSquare(cell.x, cell.y - 1).is('*') && noNumberInColumn(cell.y - 1) == 1) {
         setValue(cell.x, cell.y - 1, '*')
       }
+      // Check if can be placec below
+      else if (getSquare(cell.x, cell.y + 1).is('*') && noLightInRow(cell.y + 1) == 1) {
+        setValue(cell.x, cell.y + 1, '*')
+      }
     }
-
-    // Left + below
-    else if (getSquare(cell.x - 1, cell.y).is('_') && getSquare(cell.x, cell.y + 1).is('_')) {
-      if (noLightInColumn(cell.x - 1)) {
+    // Right
+    else if (getSquare(cell.x + 1, cell.y).is('*')
+      && (getSquare(cell.x - 1, cell.y).isNot('*') || getSquare(cell.x, cell.y - 1).isNot('*') || getSquare(cell.x, cell.y + 1).isNot('*')
+      )) {
+      // Check if can be placed to the left
+      if (getSquare(cell.x - 1, cell.y).is('_')) {
         setValue(cell.x - 1, cell.y, '*')
       }
-
-      if (noLightInRow(cell.y + 1)) {
+      // Check if can be placed above
+      else if (getSquare(cell.x, cell.y - 1).is('*')) {
+        setValue(cell.x, cell.y - 1, '*')
+      }
+      // Check if can be placec below
+      else if (getSquare(cell.x, cell.y + 1).is('*')) {
         setValue(cell.x, cell.y + 1, '*')
       }
     }
 
-    // Right + above
-    else if (getSquare(cell.x + 1, cell.y).is('_') && getSquare(cell.x, cell.y - 1).is('_')) {
-      if (noLightInColumn(cell.x + 1)) {
-        setValue(cell.x + 1, cell.y, '*')
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Left + above
+    if (getSquare(cell.x - 1, cell.y).is('_') && getSquare(cell.x, cell.y - 1).is('_')) {
+      if (noLightInColumn(cell.x - 1)) {
+        setValue(cell.x - 1, cell.y, '*')
+        cellChangeToTilde(cell, cell.x - 1, cell.y)
       }
 
       if (noLightInRow(cell.y - 1)) {
         setValue(cell.x, cell.y - 1, '*')
+        cellChangeToTilde(cell, cell.x, cell.y - 1)
+      }
+    }
+
+    // Left + below
+    if (getSquare(cell.x - 1, cell.y).is('_') && getSquare(cell.x, cell.y + 1).is('_')) {
+      if (noLightInColumn(cell.x - 1)) {
+        setValue(cell.x - 1, cell.y, '*')
+        cellChangeToTilde(cell, cell.x - 1, cell.y)
+      }
+
+      if (noLightInRow(cell.y + 1)) {
+        setValue(cell.x, cell.y + 1, '*')
+        cellChangeToTilde(cell, cell.x, cell.y + 1)
+      }
+    }
+
+    // Right + above
+    if (getSquare(cell.x + 1, cell.y).is('_') && getSquare(cell.x, cell.y - 1).is('_')) {
+      if (noLightInColumn(cell.x + 1)) {
+        setValue(cell.x + 1, cell.y, '*')
+        cellChangeToTilde(cell, cell.x + 1, cell.y)
+      }
+
+      if (noLightInRow(cell.y - 1)) {
+        setValue(cell.x, cell.y - 1, '*')
+        cellChangeToTilde(cell, cell.x, cell.y - 1)
       }
     }
 
     // Right + below
-    else if (getSquare(cell.x + 1, cell.y).is('*') && getSquare(cell.x, cell.y + 1).is('_')) {
+    if (getSquare(cell.x + 1, cell.y).is('*') && getSquare(cell.x, cell.y + 1).is('_')) {
       if (noLightInColumn(cell.x + 1)) {
         setValue(cell.x + 1, cell.y, '*')
+        cellChangeToTilde(cell, cell.x + 1, cell.y)
       }
 
       if (noLightInRow(cell.y - 1)) {
         setValue(cell.x, cell.y - 1, '*')
+        cellChangeToTilde(cell, cell.x, cell.y - 1)
       }
     }
   }

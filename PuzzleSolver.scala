@@ -29,7 +29,7 @@ object PuzzleSolver extends App {
     }
     val solution8x9 = {
       "_X__1___\n" +
-      "____XX__\n" +
+      "_____XX_\n" +
       "__2__1_1\n" +
       "_21_____\n" +
       "__1_____\n" +
