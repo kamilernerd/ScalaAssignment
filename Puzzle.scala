@@ -48,11 +48,14 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
 
     println(solvedBoardString + "\n")
 
-    if (!solvedBoardString.equals("_X__1*____*__XX*_*2_*1_1*21*______1__*____*2__*_X__*2_2**_02*__X_*___1*_")) {
+    val cleanedUpString = replaceChars(solvedBoardString)
+    if (!cleanedUpString.equals("_X__1*____*__XX*_*2_*1_1*21*______1__*____*2__*_X__*2_2**_02*__X_*___1*_")) {
       return walk()
     }
     return new Puzzle(x, y, prettyPrint())
   }
+
+  def replaceChars(s: String) = s.map(c => if(c == '~') '_' else c)
 
   def prettyPrint(): String = {
     var tmp = ""
@@ -484,39 +487,6 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
    *  Right + below ---
    */
   def twoMatch(cell: Square): Unit = {
-    // Left + right
-    /*
-    if (getSquare(cell.x - 1, cell.y).is('_') || getSquare(cell.x + 1, cell.y).is('_')) {
-      // Check if valid placement in left column
-      if (noLightInColumn(cell.x - 1)) {
-        if (noNumberInColumn(cell.x - 1) == 1) {
-          setValue(cell.x - 1, cell.y, '*')
-          cellChangeToTilde(cell, cell.x - 1, cell.y)
-        } else if (noNumberInColumn(cell.x - 1) == 0) {
-          if (getSquare(cell.x, cell.y - 1).is('_')) {
-            setValue(cell.x, cell.y - 1, '*')
-            cellChangeToTilde(cell, cell.x, cell.y - 1)
-          } else if (getSquare(cell.x, cell.y + 1).is('_')) {
-            setValue(cell.x, cell.y + 1, '*')
-            cellChangeToTilde(cell, cell.x, cell.y + 1)
-          }
-        }
-      }
-
-      if (noLightInColumn(cell.x + 1)) {
-        if (noNumberInColumn(cell.x + 1) == 0) {
-          setValue(cell.x + 1, cell.y, '*')
-        } else if (noNumberInColumn(cell.x + 1) == 1) {
-          if (getSquare(cell.x, cell.y + 1).is('_')) {
-            setValue(cell.x, cell.y + 1, '*')
-          } else if (getSquare(cell.x, cell.y - 1).is('_')) {
-            setValue(cell.x, cell.y - 1, '*')
-          }
-        }
-      }
-    }
-    */
-
     // Has only one light connected
     // Left
     if (getSquare(cell.x - 1, cell.y).is('*') &&
@@ -553,12 +523,39 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       }
     }
     // Above
-    else if (getSquare(cell.x, cell.y).is('*') &&
-      (getSquare(cell.x - 1, cell.y).isNot('*'))
+    else if (getSquare(cell.x, cell.y - 1).is('*') &&
+      (getSquare(cell.x - 1, cell.y).isNot('*') || getSquare(cell.x + 1, cell.y).isNot('*') ||getSquare(cell.x, cell.y + 1).isNot('*'))
     ) {
-
+      // Check if can be placed to the left
+      if (getSquare(cell.x - 1, cell.y).is('_')) {
+        setValue(cell.x - 1, cell.y, '*')
+      }
+      // Check if can be placed above
+      else if (getSquare(cell.x, cell.y - 1).is('*')) {
+        setValue(cell.x, cell.y - 1, '*')
+      }
+      // Check if can be placec above
+      else if (getSquare(cell.x, cell.y + 1).is('*')) {
+        setValue(cell.x, cell.y - 1, '*')
+      }
     }
-
+    // Below
+    else if (getSquare(cell.x, cell.y + 1).is('*') &&
+      (getSquare(cell.x - 1, cell.y).isNot('*') || getSquare(cell.x + 1, cell.y).isNot('*') ||getSquare(cell.x, cell.y - 1).isNot('*'))
+    ) {
+      // Check if can be placed to the left
+      if (getSquare(cell.x - 1, cell.y).is('_')) {
+        setValue(cell.x - 1, cell.y, '*')
+      }
+      // Check if can be placed above
+      else if (getSquare(cell.x, cell.y - 1).is('*')) {
+        setValue(cell.x, cell.y - 1, '*')
+      }
+      // Check if can be placec below
+      else if (getSquare(cell.x, cell.y + 1).is('*')) {
+        setValue(cell.x, cell.y + 1, '*')
+      }
+    }
 
 
 
