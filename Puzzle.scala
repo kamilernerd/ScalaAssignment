@@ -199,6 +199,47 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     s"${sizeX}x${sizeY} -->\n${solution}"
   }
 
+  def cellChangeToTilde(cell: Square, xCord: Int, yCord: Int): Unit ={  //SEND SQUARE WHERE LIGHTBULB IS PLACED && WHICH CELL HAS LIGHTBULB
+
+    val xVal = xCord       //xVal is to keep a copy of original spot SHOULD NOT BE MUTABLE
+    val yVal = yCord       //yVal is to keep a copy of original spot SHOULD NOT BE MUTABLE
+
+    var xVal1 = xCord + 1   //to loop over right side
+    var xVal2 = xCord - 1   //to loop over left side
+
+    var yVal1 = yCord + 1   //to loop below
+    var yVal2 = yCord - 1   //to loop above
+
+    while (xVal1 < sizeX && getSquare(xVal1, yVal).is('_')) { //loop over right side till either something a wall is hit or edge
+      setValue(xVal1, yVal, '~')
+      xVal1 += 1
+    }
+
+    while (xVal2 >= 0 && (getSquare(xVal2, yVal).is('_'))) { //loop over left side till either something a wall is hit or edge
+      setValue(xVal2, yVal, '~')
+      xVal2 -= 1
+    }
+
+    while(yVal1 < sizeY && getSquare(xVal, yVal1).is('_')){ //loop over below, till either something a wall is hit or edge
+      println("JHelpa")
+      setValue(xVal, yVal1, '~')
+      yVal1 += 1
+    }
+
+    while(yVal2 >= 0 && getSquare(xVal, yVal2).is('_')) { // loop over above, till either something a wall is hit or edge
+      setValue(xVal, yVal2, '~')
+      yVal2 -= 1
+    }
+
+  }
+
+
+  /*
+
+  Definite function that loops over rows with ~
+
+   */
+
   /**
    *
    * DEFINITE MATCHES
@@ -235,6 +276,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       )
       {
         setValue(cell.x - 1, cell.y, '*')
+        cellChangeToTilde(cell, cell.x - 1, cell.y)
       }
     }
 
@@ -245,6 +287,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
         (cell.x == 0 || getSquare(cell.x - 1, cell.y).isNot('_')) // Left
       ) {
         setValue(cell.x + 1, cell.y, '*')
+        cellChangeToTilde(cell, cell.x + 1, cell.y)
       }
     }
 
@@ -255,6 +298,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
         (cell.y == sizeY ||getSquare(cell.x, cell.y + 1).isNot('_')) // Below
       ) {
         setValue(cell.x, cell.y - 1, '*')
+        cellChangeToTilde(cell, cell.x, cell.y - 1)
       }
     }
 
@@ -265,10 +309,11 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
         (cell.y == 0 || getSquare(cell.x, cell.y - 1).isNot('_')) // Above
       ) {
         setValue(cell.x, cell.y + 1, '*')
+        cellChangeToTilde(cell, cell.x, cell.y + 1)
       }
     }
   }
-  
+
 
   def definiteTwoMatch(cell: Square) = {
 
