@@ -232,8 +232,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     }
 
   }
-
-
+  
   /*
 
   Definite function that loops over rows with ~
