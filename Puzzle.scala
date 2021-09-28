@@ -37,12 +37,12 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       }
     })
 
-//    gameBoard.foreach((cell: Square) => {
-//      cell.getValue() match {
+    gameBoard.foreach((cell: Square) => {
+      cell.getValue() match {
 //        case '2' => twoMatch(cell)
-//        case _ => cell
-//      }
-//    })
+        case _ => cell
+      }
+    })
 
     println(prettyPrint())
 
@@ -199,6 +199,9 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     s"${sizeX}x${sizeY} -->\n${solution}"
   }
 
+  /*
+  Definite function that loops over rows with ~
+   */
   def cellChangeToTilde(cell: Square, xCord: Int, yCord: Int): Unit ={  //SEND SQUARE WHERE LIGHTBULB IS PLACED && WHICH CELL HAS LIGHTBULB
 
     val xVal = xCord       //xVal is to keep a copy of original spot SHOULD NOT BE MUTABLE
@@ -232,12 +235,6 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     }
 
   }
-  
-  /*
-
-  Definite function that loops over rows with ~
-
-   */
 
   /**
    *
@@ -320,24 +317,32 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     if (cell.x == 0 && cell.y == 0) { //check first corner
       setValue(cell.x, cell.y + 1, '*')
       setValue(cell.x + 1, cell.y, '*')
+      cellChangeToTilde(cell, cell.x, cell.y + 1)
+      cellChangeToTilde(cell, cell.x + 1, cell.y)
     }
 
     // top right
     else if (cell.x == sizeX - 1 && cell.y == 0) {
       setValue(cell.x - 1, cell.y, '*')
       setValue(cell.x, cell.y + 1, '*')
+      cellChangeToTilde(cell, cell.x - 1, cell.y)
+      cellChangeToTilde(cell, cell.x, cell.y + 1)
     }
 
     // bottom left
     else if (cell.y == sizeY - 1 && cell.x == 0) {
       setValue(cell.x, cell.y - 1, '*')
       setValue(cell.x + 1, cell.y, '*')
+      cellChangeToTilde(cell, cell.x, cell.y - 1)
+      cellChangeToTilde(cell, cell.x + 1, cell.y)
     }
 
     // bottom right
     else if (cell.y == sizeY - 1 && cell.x == sizeX - 1) {
       setValue(cell.x, cell.y - 1, '*')
       setValue(cell.x - 1, cell.y, '*')
+      cellChangeToTilde(cell, cell.x, cell.y - 1)
+      cellChangeToTilde(cell, cell.x - 1, cell.y)
     }
 
     //    // x +- 1 placement - above&&below unavailable
@@ -454,11 +459,14 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       if (noLightInColumn(cell.x - 1)) {
         if (noNumberInColumn(cell.x - 1) == 1) {
           setValue(cell.x - 1, cell.y, '*')
+          cellChangeToTilde(cell, cell.x - 1, cell.y)
         } else if (noNumberInColumn(cell.x - 1) == 0) {
           if (getSquare(cell.x, cell.y - 1).is('_')) {
             setValue(cell.x, cell.y - 1, '*')
+            cellChangeToTilde(cell, cell.x, cell.y - 1)
           } else if (getSquare(cell.x, cell.y + 1).is('_')) {
             setValue(cell.x, cell.y + 1, '*')
+            cellChangeToTilde(cell, cell.x, cell.y + 1)
           }
         }
       }
