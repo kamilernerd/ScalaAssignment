@@ -34,6 +34,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
           //case '1' => definiteOneMatch(cell)
           //case '2' => definiteTwoMatch(cell)
           case '3' => definiteThreeMatch(cell)
+          case '4' => fourMatch(cell)
           case _ => isolatedMatch(cell)
         }
       })
