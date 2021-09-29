@@ -30,9 +30,9 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     def defMatches() = {
       gameBoard.foreach((cell: Square) => {
         cell.getValue() match {
-          //case '0' => zeroMatch(cell)
+          case '0' => zeroMatch(cell)
           //case '1' => definiteOneMatch(cell)
-          //case '2' => definiteTwoMatch(cell)
+          case '2' => definiteTwoMatch(cell)
           case '3' => definiteThreeMatch(cell)
           case '4' => fourMatch(cell)
           case _ => isolatedMatch(cell)
@@ -283,27 +283,29 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     if(xCord - 1 == '~' && xCord + 1 == '~' && yCord - 1 == '~' && yCord + 1 == '~'){
       setValue(xCord, yCord, '*')
     }
-
   }
 
+
   def zeroMatch(cell: Square) = {
+    val xCord = cell.x
+    val yCord = cell.y
     // Case 1 - Check left
-    if (getSquare(cell.x - 1, cell.y).getValue() == '_') {
+    if (xCord - 1 >= 0 && getSquare(cell.x - 1, cell.y).is('_')) {
       setValue(cell.x - 1, cell.y, '~')
     }
 
     // Case 2 - Check right
-    if (getSquare(cell.x + 1, cell.y).getValue() == '_') {
+    if (cell.x + 1 < sizeX && getSquare(cell.x + 1, cell.y).is('_')) {
       setValue(cell.x + 1, cell.y, '~')
     }
 
     // Case 4 - Check above
-    if (getSquare(cell.x, cell.y - 1).getValue() == '_') {
+    if (yCord - 1 >= 0 && getSquare(cell.x, cell.y - 1).is('_')) {
       setValue(cell.x, cell.y - 1, '~')
     }
 
     // Case 6 - Check below
-    if (getSquare(cell.x, cell.y + 1).getValue() == '_') {
+    if (yCord + 1 < sizeY && getSquare(cell.x, cell.y + 1).is('_')) {
       setValue(cell.x, cell.y + 1, '~')
     }
   }
@@ -637,5 +639,6 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     setValue(cell.x - 1, cell.y, '*')
     setValue(cell.x, cell.y + 1, '*')
     setValue(cell.x, cell.y - 1, '*')
+    cellChangeToTilde(cell, cell.x, cell.y)
   }
 }
