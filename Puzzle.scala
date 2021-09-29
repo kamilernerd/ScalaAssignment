@@ -253,7 +253,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       xVal1 += 1
     }
 
-    while (xVal2 >= 0 && ((getSquare(xVal2, yVal).is('_')) || getSquare(xVal2, yVal).is('~'))) { //loop over left side till either something a wall is hit or edge
+    while (xVal2 >= 0 && (getSquare(xVal2, yVal).is('_') || getSquare(xVal2, yVal).is('~'))) { //loop over left side till either something a wall is hit or edge
       setValue(xVal2, yVal, '~')
       xVal2 -= 1
     }
@@ -263,7 +263,7 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       yVal1 += 1
     }
 
-    while (yVal2 >= 0 && ((getSquare(xVal, yVal2).is('_')) || getSquare(xVal, yVal2).is('~'))) { // loop over above, till either something a wall is hit or edge
+    while (yVal2 >= 0 && (getSquare(xVal, yVal2).is('_') || getSquare(xVal, yVal2).is('~'))) { // loop over above, till either something a wall is hit or edge
       setValue(xVal, yVal2, '~')
       yVal2 -= 1
     }
@@ -639,6 +639,10 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
     setValue(cell.x - 1, cell.y, '*')
     setValue(cell.x, cell.y + 1, '*')
     setValue(cell.x, cell.y - 1, '*')
-    cellChangeToTilde(cell, cell.x, cell.y)
+    cellChangeToTilde(cell, cell.x - 1, cell.y) //send left square
+    cellChangeToTilde(cell, cell.x + 1, cell.y) //right square
+    cellChangeToTilde(cell, cell.x, cell.y - 1) //top square
+    cellChangeToTilde(cell, cell.x, cell.y + 1) //bottom square
+
   }
 }
