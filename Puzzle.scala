@@ -461,6 +461,10 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       setValue(cell.x + 1, cell.y, '*')
       setValue(cell.x, cell.y + 1, '*')
       setValue(cell.x, cell.y - 1, '*')
+
+      cellChangeToTilde(cell, cell.x + 1, cell.y) //send every light bulb to change
+      cellChangeToTilde(cell, cell.x, cell.y - 1)
+      cellChangeToTilde(cell, cell.x, cell.y + 1)
     }
 
     else if (cell.x + 1 >= sizeX || getSquare(cell.x + 1, cell.y).isNot('_')) { // Check right is unavailable
@@ -468,6 +472,10 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       setValue(cell.x - 1, cell.y, '*')
       setValue(cell.x, cell.y + 1, '*')
       setValue(cell.x, cell.y - 1, '*')
+
+      cellChangeToTilde(cell, cell.x - 1, cell.y) //send every light bulb to change
+      cellChangeToTilde(cell, cell.x, cell.y - 1)
+      cellChangeToTilde(cell, cell.x, cell.y + 1)
     }
 
     else if (cell.y - 1 <= 0 || getSquare(cell.x, cell.y - 1).isNot('_')) { // Check above is unavailable
@@ -475,6 +483,10 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       setValue(cell.x - 1, cell.y, '*')
       setValue(cell.x + 1, cell.y, '*')
       setValue(cell.x, cell.y + 1, '*')
+
+      cellChangeToTilde(cell, cell.x - 1, cell.y) //send every light bulb to change
+      cellChangeToTilde(cell, cell.x + 1, cell.y)
+      cellChangeToTilde(cell, cell.x, cell.y + 1)
     }
 
     else if (cell.y + 1 >= sizeY || getSquare(cell.x, cell.y + 1).isNot('_')) { // Check below is unavailable
@@ -482,6 +494,10 @@ class Puzzle(x: Int, y: Int, sol: String) { // just trivial data here
       setValue(cell.x - 1, cell.y, '*')
       setValue(cell.x + 1, cell.y, '*')
       setValue(cell.x, cell.y - 1, '*')
+
+      cellChangeToTilde(cell, cell.x - 1, cell.y) //send every light bulb to change
+      cellChangeToTilde(cell, cell.x + 1, cell.y)
+      cellChangeToTilde(cell, cell.x, cell.y - 1)
     }
   }
 
